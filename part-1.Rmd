@@ -2,6 +2,7 @@
 title: "STAT 410 Group Research Project Part 1: Proposal"
 output: html_document
 author: Sam Minard & Efrain Ramirez
+toc: true
 ---
 
 First, I am going to explore a data set from Pew Research Center (American Trends Panel Wave 124). It is a .sav file, which requires the "haven" package to read it in. <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/>
@@ -34,10 +35,37 @@ amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xl
 
 3.  Which demographic or political factors predict satisfaction with the way democracy is working in the US? (SATISFIED_DEMOCRACY_W124)
 
+4. Is feeling like neither party represents one's views or that elected officials don't care what one thinks associated with dissatisfaction with the way democracy is working in the US, or support for elite expert-rule through technocracy (POLSYS_TECH_W124)? 
+
+5. Is a preference for getting news and information from social media sites associated with negative attitudes toward democracy or support for 
+
 ### **Why this data set and these questions?**
 Donald Trump and his administration are currently consolidating power in an unprecedented manner and the US political system is starting to resemble an autocracy or oligarchy. Despite the ongoing abuses of power, many Americans remain supportive of Trump's actions and level of power. I am curious what factors are associated with support for autocratic and authoritarian leadership among Americans, and what factors predict satisfaction with the way democracy is working in the US. 
 
 The data set contains demographic variables such as race/age/income/etc, as well as attitude questions, which will allow these questions to be answered.
 
+```{r data-cleaning}
+#selecting just the variables I am interested in exploring and making a subset
+amertrends_subset <- amertrends |> 
+  select(POLSYS_AUTOC_W124, POLSYS_JUNTA_W124, POLSYS_TECH_W124, POLSYS_REPUBLIC_W124, POLSYS_DIRECTDEM_W124, ECON_SIT_W124, SATISFIED_DEMOCRACY_W124, FAVPOL_BIDEN_W124, FAVPOL_TRUMP_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, OFFICIALS_CARE_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_CREGION, F_CDIVISION, F_USR_SELFID, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_REG, F_INC_SDT1, F_IDEO, F_INC_TIER2)
+
+#make the names lowercase
+amertrends_subset <- janitor::clean_names(amertrends_subset)
+glimpse(amertrends_subset)
+
+#converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(everything(), ~ replace(.x, .x == 99, NA)))
+
+#visualize missing data in the subset
+visdat::vis_miss(amertrends_subset)
+
+#many of the columns are treated as numeric despite being categorical, because the responses are numbers that represent words/sentence choices
+#must fix this by redefining the column types
+
+#col_factor()
+
+
+```
 
 
