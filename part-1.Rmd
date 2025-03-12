@@ -33,3 +33,11 @@ amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xl
 2.  How does perceived economic hardship (ECON_SIT_W124) relate to preferences for authoritarian leadership? (dependent: POLSYS_AUTOC_W124, POLSYS_JUNTA_W124)
 
 3.  Which demographic or political factors predict satisfaction with the way democracy is working in the US? (SATISFIED_DEMOCRACY_W124)
+
+### **Why this data set and these questions?**
+Donald Trump and his administration are currently consolidating power in an unprecedented manner and the US political system is starting to resemble an autocracy or oligarchy. Despite the ongoing abuses of power, many Americans remain supportive of Trump's actions and level of power. I am curious what factors are associated with support for autocratic and authoritarian leadership among Americans, and what factors predict satisfaction with the way democracy is working in the US. 
+
+The data set contains demographic variables such as race/age/income/etc, as well as attitude questions, which will allow these questions to be answered.
+
+
+
