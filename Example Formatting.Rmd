@@ -1,0 +1,97 @@
+---
+title: "Project Formatting Examples"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "", message = FALSE, warning = FALSE)
+
+
+#mosaic package makes some functions more user-friendly for Intro Stat topics
+library(mosaic)
+#ggformula package is for graphics
+library(ggformula)
+
+#janitor package will help us clean up variable names
+library(janitor)
+```
+
+## Abstract
+
+This is not an example of a full Final Project! The purpose of this document is to show you some useful formatting options for R Markdown. Note I can change the size of my section headers based on how many # I put. 
+
+## Introduction
+
+I put my introduction here.
+
+## Results
+
+In my results section, I might want to put some graphics! I am actually creating my graphics in the Appendix. After creating and saving the graphs, I can reference the .png files in this section to print the image. 
+
+In this section, I might want to create a table. Here is a small example. 
+
+Parameter | Estimate | p-value
+---------|---------|---------
+Intercept | -76.64 | <.0001
+
+I might want to insert an image that I generated previously in my appendix. 
+![This is the caption!](myplot.png)
+
+I can also insert an image via an R code chunk. If I do it thi way, I need to be sure to suppress the code from printing! 
+```{r  echo=FALSE}
+knitr::include_graphics("myplot.png")
+```
+
+
+
+# References
+
+# Appendix of All R Code
+
+Read in the data and create an example graphic to put in our paper. We want the knitted file to show code and output. 
+```{r echo=TRUE}
+library(car)
+data(Davis) #found in the car package
+
+#clean names
+davis <- Davis %>%
+  clean_names()
+
+#Just view the first couple of rows of data
+head(davis) 
+
+#variable information
+str(davis)
+```
+
+
+There is an obvious outlier and after some investigation, we see it is row 12.  Therefore, we want to remove that data point from our analysis (this is most likely a data entry error as there would not be someone who is less than 60 cm in real life, or at least not an adult).
+```{r}
+```
+
+
+Let's use some new arguments in `ggformula` to look at our data, but split by sex.
+```{r}
+#remove an outlier and create a plot
+new_davis<-davis[-12,] #removes row 12 from the dataframe
+
+#including sex in the model, outlier removed
+gf_point(weight~height, shape = ~sex, color = ~sex, data=new_davis, xlab="Height (cm)", ylab="Weight (kg)") %>%
+  gf_lm() 
+```
+Now we want to save this graph so we can insert it earlier in our paper. 
+
+```{r}
+#by default this saves the last graph you created. you can change the width or height (inches)
+ggsave("myplot.png", width=5, height=2.5)
+```
+
+After I run this code once to save the graph, THEN I can go back to the top of my document and insert the image. 
+
+```{r}
+#Run the model, view coefficients and hypothesis tests
+model<-lm(weight~height+factor(sex), data=new_davis)
+
+```
+
+

@@ -1,0 +1,35 @@
+---
+title: "STAT 410 Group Research Project Part 1: Proposal"
+output: html_document
+author: Sam Minard & Efrain Ramirez
+---
+
+First, I am going to explore a data set from Pew Research Center (American Trends Panel Wave 124). It is a .sav file, which requires the "haven" package to read it in. <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/>
+
+```{r setup}
+#install.packages("haven")
+library(haven)
+library(readxl) 
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r load-data}
+#| echo: false
+#dataset is called American Trends Panel Wave 124
+#load the data
+amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
+
+#load the codebook for the data to understand what each variable represents
+amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xlsx")
+#view(amertrends_codebook)
+
+```
+
+### **Potential research questions we can investigate:**
+
+1.  What demographic or political characteristics are associated with support for a strong leader who rules without checks and balances (i.e. autocracy)? (dependent variable: POLSYS_AUTOC_W124)
+
+2.  How does perceived economic hardship (ECON_SIT_W124) relate to preferences for authoritarian leadership? (dependent: POLSYS_AUTOC_W124, POLSYS_JUNTA_W124)
+
+3.  Which demographic or political factors predict satisfaction with the way democracy is working in the US? (SATISFIED_DEMOCRACY_W124)
