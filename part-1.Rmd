@@ -67,8 +67,5 @@ visdat::vis_miss(amertrends_subset)
 
 
 ```
-```{r test codechunk}
-visdat::vis_miss(amertrends_subset)
-```
 
 
