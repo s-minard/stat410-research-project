@@ -51,7 +51,6 @@ amertrends_subset <- amertrends |>
 
 #make the names lowercase
 amertrends_subset <- janitor::clean_names(amertrends_subset)
-glimpse(amertrends_subset)
 
 #converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
 amertrends_subset <- amertrends_subset |> 
@@ -60,11 +59,12 @@ amertrends_subset <- amertrends_subset |>
 #visualize missing data in the subset
 visdat::vis_miss(amertrends_subset)
 
-#many of the columns are treated as numeric despite being categorical, because the responses are numbers that represent words/sentence choices
+#many of the columns are treated as numeric despite being categorical/factor, because the responses are numbers that represent words/sentence choices
 #must fix this by redefining the column types
+amertrends_subset <- amertrends_subset |> 
+mutate(across(where(is.numeric), as.factor))
 
-#col_factor()
-
+str(amertrends_subset)
 
 ```
 
