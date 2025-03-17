@@ -1,6 +1,8 @@
 ---
-title: ""
-output: word_document
+title: ''
+output:
+  html_document:
+    df_print: paged
 ---
 
 <center>
@@ -20,7 +22,6 @@ As of 2021, 70% of the world’s population, or 5.4 billion people, live under a
 
 The current rise in support for autocratic governance in the U.S. is suggested to be the result of white, working-class men who perceive their status in society to be declining and under threat from the rise of other demographic groups over the last 30 years (Gidron & Hall, 2017). This sense of “status threat” has effectively been channeled into support for right wing populism and its frontmen, including Donald Trump (Mutz, 2018). Trump, like many aspiring autocrats, “appeal[s] to his followers in their desperate need of something grand and powerful to help them avoid confronting their extinction anxiety” (Wahba, 2022, p. 185). The group that finds this rhetoric most compelling includes white, US-born, Christian, low-educated, cisgender, heterosexual men (Watson et al., 2022). While research has established this group as the most favorable to right wing populism in the U.S., no explicit connection has been verified between these demographic factors and support for autocracy specifically. The connection remains assumptive based on the notion that populism can naturally lead to a preference for autocratic leadership. To address this gap, we aim to answer the following research question: *What demographic characteristics or political leanings are associated with support for autocratic leadership?*
 
-
 Populist movements and the autocratic leaders they support are often fueled by anxiety and subjective perceptions of economic insecurity, irrespective of whether objective measures of hardship are present (Gidron & Hall, 2017). In other words, actual economic insecurity is not necessary, only the perception of insecurity. Moreover, it is the perception of economic insecurity at the macro level that significantly predicts these attitudes, not at the micro level (Watson et al., 2021). Severe real-world threats can be especially impactful in this regard. For example, through their analysis of the Covid-19 pandemic and the subsequent economic downturn in Italy, Rocatto et al. (2020) found that times of uncertainty and hardship can drive people toward anti-democratic, authoritarian, and autocratic leaders because they offer a restored sense of control over their social world. Given that a recent Pew Research Center poll found Americans’ current economic ratings to be predominantly negative (Cerda, 2025), it is important to test the relationship between subjective economic insecurity and anti-democratic sentiment in the US. Therefore, our second research question is as follows: *How does perceived macro level economic insecurity relate to preferences/support for autocratic leadership?*
 
 As the information channels American society relies on continue to evolve, it is important to consider the relationship between media type preferences and anti-democratic sentiments that encourage support for autocratic leadership. Notably, mainstream media trust among conservatives has declined– though it continues to be positively maintained among liberals– resulting in conservatives seeking alternatives like social media, where they encounter misinformation and populist rhetoric (Hutchens et al., 2025; Mourão, 2017). Social media has been touted as a democratic panacea because of its potential for disseminating anti-regime information and mobilizing collective action, although many autocratic regimes engage in social media censorship (Gunitsky, 2015). While censorship is a serious issue, Gunitsky (2015) argues that these regimes have since moved from suppression to co-optation of social media as a tool to maintain autocratic stability– a far more insidious tactic. Co-opting social media allows autocratic regimes to shape the discourse on social media, promote counter-mobilization, and bolster regime legitimacy. Given autocratic co-optation alongside the transition to social media as the public’s primary source of news and information, it is crucial to investigate the relationship between social media use and support for autocratic governance among American adults. Furthermore, the disparity in media preferences between conservatives and liberals means that political ideology must be considered as a mediating factor in this relationship. As a result, we propose the following research question: *Is a preference for getting news and information primarily from social media associated with greater support for autocratic leadership? How does this relationship vary depending on political ideology?*
@@ -31,7 +32,7 @@ This study conducts secondary analysis of the *American Trends Panel Wave 124* d
 
 The primary dependent variable in this study is Support for Autocratic Governance, as represented by the variable *POLSYS_AUTOC_W124*, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused.” 
 
-Independent variables include demographic characteristics such as age, race, gender, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124*. These variables consisted of questions about how often respondents get news, facts, and opinions about issues or events from social media sites. They may be combined to form a single index score for social media reliance in the final analysis.
+Independent variables include demographic characteristics such as age, race, gender, religion, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124*. These variables consisted of questions about how often respondents get news, facts, and opinions about issues or events from social media sites. They may be combined to form a single index score for social media reliance in the final analysis.
 
 ## References
 
@@ -53,7 +54,7 @@ Hutchens, M. J., Shaughnessy, B., & DuBosar, E. (2025). Populist hyperpartisans?
 
 Mourão, R. R., Thorson, E., Chen, W., & Tham, S. M. (2018). Media repertoires and news trust during the early Trump administration. Journalism Studies, 19(13), 1945–1956. <https://doi.org/10.1080/1461670X.2018.1500492>
 
-Mutz, D. C. (2018). Status threat, not economic hardship, explains the 2016 presidential vote. Proceedings of the National Academy of Sciences, 115(19). https://doi.org/10.1073/pnas.1718155115
+Mutz, D. C. (2018). Status threat, not economic hardship, explains the 2016 presidential vote. Proceedings of the National Academy of Sciences, 115(19). <https://doi.org/10.1073/pnas.1718155115>
 
 Pew Research Center. (2023). American Trends Panel Wave 124 [Data file and codebook]. Retrieved from <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/.> 
 
@@ -62,4 +63,44 @@ Roccato, M., Cavazza, N., Colloca, P., & Russo, S. (2020). A democratic emergenc
 Wahba, L. L. (2022). Innocents, psychopaths and the imagination. Journal of Analytical Psychology, 67(1), 183–195. <https://doi.org/10.1111/1468-5922.12773>
 
 Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
+
+## Codes
+
+```{r setup, echo=FALSE}
+library(haven)
+library(readxl) 
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r load-data}
+#read the data file
+amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
+
+#load the codebook for the data to understand what each variable represents
+amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xlsx")
+```
+
+```{r data-cleaning-and-exploration}
+#selecting a subset the variables for exploration 
+amertrends_subset <- amertrends |> 
+  select(POLSYS_AUTOC_W124, POLSYS_JUNTA_W124, POLSYS_TECH_W124, POLSYS_REPUBLIC_W124, POLSYS_DIRECTDEM_W124, ECON_SIT_W124, SATISFIED_DEMOCRACY_W124, FAVPOL_BIDEN_W124, FAVPOL_TRUMP_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, OFFICIALS_CARE_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_CREGION, F_CDIVISION, F_USR_SELFID, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_REG, F_INC_SDT1, F_IDEO, F_INC_TIER2)
+
+#change variable names to snake_case
+amertrends_subset <- janitor::clean_names(amertrends_subset)
+
+#converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(everything(), ~ replace(.x, .x == 99, NA)))
+
+#visualize missing data in the subset
+visdat::vis_miss(amertrends_subset)
+
+#many of the columns are treated as numeric despite being categorical/factor, because the responses are numbers that represent words/sentence choices
+#fix this by redefining the column types
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(where(is.numeric), as.factor))
+
+str(amertrends_subset)
+```
 :::
