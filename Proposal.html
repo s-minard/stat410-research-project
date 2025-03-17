@@ -1844,7 +1844,7 @@ visdat::vis_miss(amertrends_subset)</code></pre>
 <pre class="r"><code>#many of the columns are treated as numeric despite being categorical/factor, because the responses are numbers that represent words/sentence choices
 #fix this by redefining the column types
 amertrends_subset &lt;- amertrends_subset |&gt; 
-mutate(across(where(is.numeric), as.factor))
+  mutate(across(where(is.numeric), as.factor))
 
 str(amertrends_subset)</code></pre>
 <pre><code>## tibble [3,576 × 42] (S3: tbl_df/tbl/data.frame)
