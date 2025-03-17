@@ -1,0 +1,65 @@
+---
+title: ""
+output: word_document
+---
+
+<center>
+
+## Factors Affecting Support for Autocratic Governance Among U.S. Adults\center
+
+#### Sam Minard^1^ & Efrain Ramirez^2^
+
+^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA*
+
+^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
+
+::: {style="text-align: left;"}
+## Introduction
+
+As of 2021, 70% of the world’s population, or 5.4 billion people, live under an autocratic regime (Boese et al., 2022). Autocracies are a form of government “by a single person or small group that has unlimited power or authority” (Cambridge University Press & Assessment, n.d.). Support for autocratic governance often arises from populist movements, and populism– especially of the right wing variety– is on the rise around the world, including in the United States. At its core, populism is an anti-elitist, anti-pluralist political ideology based on the idea that the “true people” are under threat from some kind of elite enemy, be it an economic, political, racial, or foreign one (Berlin et al., 1968). Although populists claim to represent all people, their definition of “people” is inherently exclusionary toward perceived “enemies” and rests upon an “us versus them” dichotomy. While populist movements will not always transition into autocratic regimes, the ideology easily fuels support for autocratic leaders who convince the people that only they can protect them from perceived enemies (Baturo et al., 2024). Populist rhetoric also supports autocratic rule when used to justify the consolidation of executive power without accountability (Al Waroi et al., 2024). In the United States, Donald Trump’s populist messaging has galvanized many white, working-class Americans against a variety of perceived enemies, including racial and gender minorities, immigrants, and other vaguely defined “elites.” Since regaining the presidency in 2025, Trump has taken steps to consolidate his power and remove checks and balances, thus bringing the United States closer to an authoritarian autocracy– and many Americans wholeheartedly support this transformation. Therefore, this paper seeks to understand the factors associated with support for autocratic leadership among Americans. 
+
+The current rise in support for autocratic governance in the U.S. is suggested to be the result of white, working-class men who perceive their status in society to be declining and under threat from the rise of other demographic groups over the last 30 years (Gidron & Hall, 2017). This sense of “status threat” has effectively been channeled into support for right wing populism and its frontmen, including Donald Trump (Mutz, 2018). Trump, like many aspiring autocrats, “appeal[s] to his followers in their desperate need of something grand and powerful to help them avoid confronting their extinction anxiety” (Wahba, 2022, p. 185). The group that finds this rhetoric most compelling includes white, US-born, Christian, low-educated, cisgender, heterosexual men (Watson et al., 2022). While research has established this group as the most favorable to right wing populism in the U.S., no explicit connection has been verified between these demographic factors and support for autocracy specifically. The connection remains assumptive based on the notion that populism can naturally lead to a preference for autocratic leadership. To address this gap, we aim to answer the following research question: *What demographic characteristics or political leanings are associated with support for autocratic leadership?*
+
+
+Populist movements and the autocratic leaders they support are often fueled by anxiety and subjective perceptions of economic insecurity, irrespective of whether objective measures of hardship are present (Gidron & Hall, 2017). In other words, actual economic insecurity is not necessary, only the perception of insecurity. Moreover, it is the perception of economic insecurity at the macro level that significantly predicts these attitudes, not at the micro level (Watson et al., 2021). Severe real-world threats can be especially impactful in this regard. For example, through their analysis of the Covid-19 pandemic and the subsequent economic downturn in Italy, Rocatto et al. (2020) found that times of uncertainty and hardship can drive people toward anti-democratic, authoritarian, and autocratic leaders because they offer a restored sense of control over their social world. Given that a recent Pew Research Center poll found Americans’ current economic ratings to be predominantly negative (Cerda, 2025), it is important to test the relationship between subjective economic insecurity and anti-democratic sentiment in the US. Therefore, our second research question is as follows: *How does perceived macro level economic insecurity relate to preferences/support for autocratic leadership?*
+
+As the information channels American society relies on continue to evolve, it is important to consider the relationship between media type preferences and anti-democratic sentiments that encourage support for autocratic leadership. Notably, mainstream media trust among conservatives has declined– though it continues to be positively maintained among liberals– resulting in conservatives seeking alternatives like social media, where they encounter misinformation and populist rhetoric (Hutchens et al., 2025; Mourão, 2017). Social media has been touted as a democratic panacea because of its potential for disseminating anti-regime information and mobilizing collective action, although many autocratic regimes engage in social media censorship (Gunitsky, 2015). While censorship is a serious issue, Gunitsky (2015) argues that these regimes have since moved from suppression to co-optation of social media as a tool to maintain autocratic stability– a far more insidious tactic. Co-opting social media allows autocratic regimes to shape the discourse on social media, promote counter-mobilization, and bolster regime legitimacy. Given autocratic co-optation alongside the transition to social media as the public’s primary source of news and information, it is crucial to investigate the relationship between social media use and support for autocratic governance among American adults. Furthermore, the disparity in media preferences between conservatives and liberals means that political ideology must be considered as a mediating factor in this relationship. As a result, we propose the following research question: *Is a preference for getting news and information primarily from social media associated with greater support for autocratic leadership? How does this relationship vary depending on political ideology?*
+
+## Methods
+
+This study conducts secondary analysis of the *American Trends Panel Wave 124* data set from Pew Research Center, also known as *ATP Wave 124*. The survey was administered to a nationally representative, stratified random sample of U.S. adults from March 20 to March 26, 2023. Of the 4,058 panelists sampled, 3,576 responded, resulting in a response rate of 88%. Hispanic men, non-Hispanic Black men, and non-Hispanic Asian were oversampled then weighted to provide more precise estimates. 
+
+The primary dependent variable in this study is Support for Autocratic Governance, as represented by the variable *POLSYS_AUTOC_W124*, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused.” 
+
+Independent variables include demographic characteristics such as age, race, gender, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124*. These variables consisted of questions about how often respondents get news, facts, and opinions about issues or events from social media sites. They may be combined to form a single index score for social media reliance in the final analysis.
+
+## References
+
+Al Waroi, M. N. A. L., Riyanta, S., & Rustam, M. R. (2024). Populism and the erosion of democratic checks and balances: A systematic literature review across regions. International Journal of Multidisciplinary Research and Analysis, 7(10), 4728-4738. <https://doi.org/10.47191/ijmra/v7-i10-18>
+
+Baturo, A., Kenny, P. D., & Balta, E. (2024). Leaders’ experience and the transition from populism to dictatorship. Democratization, 1–24. <https://doi.org/10.1080/13510347.2024.2391482>
+
+Berlin, I., Hofstadter, R., MacRae, D., Schapiro, L., Seton-Watson, H., Touraine, A., Venturi, F., Walicki, A., & Worsley, P. (1968). To define populism. Government and Opposition, 3(2), 137–179. <http://www.jstor.org/stable/44481863>
+
+Boese, V. A., Lundstedt, M., Morrison, K., Sato, Y., & Lindberg, S. I. (2022). State of the world 2021: Autocratization changing its nature? Democratization, 29(6), 983–1013. <https://doi.org/10.1080/13510347.2022.2069751>
+
+Cambridge University Press & Assessment. (n.d.). Autocracy. In Cambridge dictionary. Retrieved March 16, 2025, from <https://dictionary.cambridge.org/us/dictionary/english/autocracy>
+
+Cerda, A. (2025, February 11). Republicans think economy will improve over the next year, Democrats expect it to get worse. Pew Research Center. <https://www.pewresearch.org/short-reads/2025/02/11/republicans-think-economy-will-improve-over-the-next-year-democrats-expect-it-to-get-worse/>
+
+Gidron, N., & Hall, P. A. (2017). The politics of social status: Economic and cultural roots of the populist right. The British Journal of Sociology, 68(S1). <https://doi.org/10.1111/1468-4446.12319>
+
+Hutchens, M. J., Shaughnessy, B., & DuBosar, E. (2025). Populist hyperpartisans?: The interaction between partisan media exposure and populism in the 2020 US presidential election. Mass Communication and Society, 28(1), 51–75. <https://doi.org/10.1080/15205436.2023.2264265>
+
+Mourão, R. R., Thorson, E., Chen, W., & Tham, S. M. (2018). Media repertoires and news trust during the early Trump administration. Journalism Studies, 19(13), 1945–1956. <https://doi.org/10.1080/1461670X.2018.1500492>
+
+Mutz, D. C. (2018). Status threat, not economic hardship, explains the 2016 presidential vote. Proceedings of the National Academy of Sciences, 115(19). https://doi.org/10.1073/pnas.1718155115
+
+Pew Research Center. (2023). American Trends Panel Wave 124 [Data file and codebook]. Retrieved from <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/.> 
+
+Roccato, M., Cavazza, N., Colloca, P., & Russo, S. (2020). A democratic emergency after a health emergency? Exposure to COVID‐19, perceived economic threat and support for anti‐democratic political systems. Social Science Quarterly, 101(6), 2193–2202. <https://doi.org/10.1111/ssqu.12865>
+
+Wahba, L. L. (2022). Innocents, psychopaths and the imagination. Journal of Analytical Psychology, 67(1), 183–195. <https://doi.org/10.1111/1468-5922.12773>
+
+Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
+:::
