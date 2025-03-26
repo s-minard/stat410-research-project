@@ -113,7 +113,15 @@ amertrends_subset <- amertrends_subset |>
                                           supports = c("1", "2"),
                                           `does not support` = c("3", "4")))
 
-
+#defining the levels of key explanatory variables
+#econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels, but we should see if there are differences between very's and somewhat's first before we lump them together. Maybe people who have strong feelings are different)
+amertrends_subset |> 
+  drop_na(econ_sit_w124) |> 
+  mutate(econ_sit_w124 = fct_recode(econ_sit_w124,
+                          "very good" = "1",
+                          "somewhat good" = "2",
+                          "somewhat bad" = "3",
+                          "very bad" = "4")) 
 
 ```
 :::
