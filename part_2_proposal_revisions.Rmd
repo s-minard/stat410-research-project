@@ -114,14 +114,52 @@ amertrends_subset <- amertrends_subset |>
                                           `does not support` = c("3", "4")))
 
 #defining the levels of key explanatory variables
-#econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels, but we should see if there are differences between very's and somewhat's first before we lump them together. Maybe people who have strong feelings are different)
-amertrends_subset |> 
+#econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels)
+amertrends_subset <- amertrends_subset|> 
   drop_na(econ_sit_w124) |> 
   mutate(econ_sit_w124 = fct_recode(econ_sit_w124,
                           "very good" = "1",
                           "somewhat good" = "2",
                           "somewhat bad" = "3",
                           "very bad" = "4")) 
+
+#bar chart for econ_sit_w124 shows most are in the somewhat bad/good categories, fewer people chose the extremes
+ggplot(amertrends_subset) +
+  geom_bar(aes(econ_sit_w124))
+
+#since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
+amertrends_subset <- amertrends_subset |> 
+  mutate(econ_sit_w124 = fct_collapse(econ_sit_w124,
+                                      good = c("very good", "somewhat good"),
+                                      bad = c("very bad", "somewhat bad")))
+
+#creating social media reliance index variable
+
+#news_use variables have responses 1) prefer news outlets, 2) prefer social media, 3) prefer both the same amount, 4) neither
+#can re-code into social media preference and non-social media preference? make binary, then compute into an index score from 0-1? 
+#news_use measures which source they prefer (soc media or news outlets), while news_source measures how often they get info from social media. Note that news_source needs to be re-coded so that higher values equal higher frequency.
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_a_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_b_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_c_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_d_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_e_w124))
+
+amertrends_subset |> 
+  drop_na(newsuse_plat_a_w124, 
+          newsuse_plat_b_w124, 
+          newsuse_plat_c_w124, 
+          newsuse_plat_d_w124, 
+          newsuse_plat_e_w124) |> 
+  mutate()
 
 ```
 :::
