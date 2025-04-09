@@ -6,8 +6,11 @@ output: html_document
 ## Variable guide
 
 autoc_support: 0 - does not support; 1 - supports
+autoc_support_cat: supports, does not support (use for visualizations)
 econ_percep: bad, good
 
+
+**Note: subset only has 117 observations. Is that because we dropped all NAs? Maybe try reloading the data later and remove the drop.na codes, then see if there are more.**
 
 ```{r setup, echo=FALSE}
 library(haven)
@@ -52,6 +55,11 @@ amertrends_subset <- amertrends_subset |>
   mutate(autoc_support = fct_collapse(polsys_autoc_w124,
                                     `1` = c("1", "2"),
                                     `0` = c("3", "4"))) 
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support_cat = fct_collapse(polsys_autoc_w124,
+                                    `Supports` = c("1", "2"),
+                                    `Does not support` = c("3", "4"))) 
+
 #change column type to numeric
 #or logical if necessary
 #amertrends_subset <- amertrends_subset |> 
@@ -85,23 +93,6 @@ amertrends_subset <- amertrends_subset |>
 
 ```{r social_media}
 #creating social media reliance index variable
-#news_use variables have responses 1) prefer news outlets, 2) prefer social media, 3) prefer both the same amount, 4) neither
-#can re-code into social media preference and non-social media preference? make binary, then compute into an index score from 0-1? 
-#news_use measures which source they prefer (soc media or news outlets), while news_source measures how often they get info from social media. Note that news_source needs to be re-coded so that higher values equal higher frequency.
-ggplot(amertrends_subset) + 
-  geom_bar(aes(x = newsuse_plat_a_w124))
-
-ggplot(amertrends_subset) + 
-  geom_bar(aes(x = newsuse_plat_b_w124))
-
-ggplot(amertrends_subset) + 
-  geom_bar(aes(x = newsuse_plat_c_w124))
-
-ggplot(amertrends_subset) + 
-  geom_bar(aes(x = newsuse_plat_d_w124))
-
-ggplot(amertrends_subset) + 
-  geom_bar(aes(x = newsuse_plat_e_w124))
 
 #re-coding newsuse variables
 #newsuse_plat_a basic facts
@@ -221,16 +212,48 @@ frq(amertrends_subset$econ_percep, out = "v")
 #freq table for autoc support
 #0 = doesn't support
 #1 = does support
-frq(amertrends_subset$autoc_support, out = "v")
+frq(amertrends_subset$autoc_support_cat, out = "v")
 
 #boxplot for sm_pref score
 amertrends_subset |> 
   ggplot() +
-  geom_boxplot(aes(sm_pref_index))
+  geom_boxplot(aes(x = sm_pref_index),
+               fill = "blue4",
+               alpha = 0.75) +
+  labs(x = "Social Media Preference Index Score") +
+  theme_minimal()
+#density
+ggplot(amertrends_subset) +
+  geom_density(aes(x = sm_pref_index,
+                   fill = autoc_support_cat), 
+               position = "stack", 
+               alpha = 0.75) +
+  theme_bw() +
+  labs(x = "Social Media Preference Index Score",
+       y = "Density",
+       fill = "Support for Autocratic Leadership",
+       title = "Distribution of Social Media Prefence Index Scores") +
+  scale_fill_manual(values = c("turquoise3", "blue4"))
 
-#histogram too?
-
-
+#summary stats for sm_pref_index
+summary(amertrends_subset$sm_pref_index)
+sd(amertrends_subset$sm_pref_index)
+#newssource
+#recoding for desc stats table
+amertrends_subset <- amertrends_subset |> 
+  mutate(newssource = fct_recode(newssource_e_w124,
+                          "Lower income" = "1",
+                          "Middle income" = "2",
+                          "Upper income" = "3")) 
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_freq_cat = fct_recode(newssource_e_w124, 
+                                  "Extremely often" = "5",
+                                  "Fairly often" = "4",
+                                  "Sometimes" = "3",
+                                  "Rarely" = "2",
+                                  "Never" = "1")) 
+#freq table for sm_freq_cat
+frq(amertrends_subset$sm_freq_cat, out = "v")
 
 ```
 
