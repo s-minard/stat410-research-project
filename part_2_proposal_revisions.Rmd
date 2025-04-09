@@ -3,6 +3,8 @@ title: ''
 output:
   word_document:
     df_print: paged
+  html_document:
+    df_print: paged
 ---
 
 <center>
@@ -14,6 +16,150 @@ output:
 ^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA*
 
 ^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
+
+```{r setup}
+#| echo: FALSE
+library(haven)
+library(readxl) 
+library(tidyverse)
+library(ggplot2)
+library(forcats)
+library(sjmisc)
+```
+
+```{r}
+#| echo: FALSE
+
+#read the data file
+amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
+
+#load the codebook for the data to understand what each variable represents
+amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xlsx")
+
+#selecting a subset the variables for exploration 
+amertrends_subset <- amertrends |> 
+  select(POLSYS_AUTOC_W124, ECON_SIT_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_INC_SDT1, F_IDEO, F_INC_TIER2)
+
+#change variable names to snake_case
+amertrends_subset <- janitor::clean_names(amertrends_subset)
+
+#converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(everything(), ~ replace(.x, .x == 99, NA)))
+
+#visualize missing data in the subset
+visdat::vis_miss(amertrends_subset)
+
+#redefine column types to factor since they represent ordered categories/likert scale 
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(where(is.numeric), as.factor))
+
+#make the response autoc variable binary/logical so it will work in the logistic model
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support = fct_collapse(polsys_autoc_w124,
+                                    `1` = c("1", "2"),
+                                    `0` = c("3", "4"))) 
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support_cat = fct_collapse(polsys_autoc_w124,
+                                    `Supports` = c("1", "2"),
+                                    `Does not support` = c("3", "4"))) 
+
+#change column type to numeric
+#or logical if necessary
+#amertrends_subset <- amertrends_subset |> 
+  #mutate(autoc_support = as.logical(as.numeric(as.character(autoc_support)))) |> 
+  #select(autoc_support)
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support = as.numeric(as.character(autoc_support))) 
+
+#defining the levels of key explanatory variables
+#econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels)
+amertrends_subset <- amertrends_subset|> 
+  drop_na(econ_sit_w124) |> 
+  mutate(econ_sit_w124 = fct_recode(econ_sit_w124,
+                          "very good" = "1",
+                          "somewhat good" = "2",
+                          "somewhat bad" = "3",
+                          "very bad" = "4")) 
+
+
+#since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
+amertrends_subset <- amertrends_subset |> 
+  mutate(econ_percep = fct_collapse(econ_sit_w124,
+                                      good = c("very good", "somewhat good"),
+                                      bad = c("very bad", "somewhat bad")))
+
+#creating social media reliance index variable
+
+#re-coding newsuse variables
+#newsuse_plat_a basic facts
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_a_w124) |> 
+  mutate(sm_pref_basicfacts = fct_collapse(newsuse_plat_a_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#newsuse_plat_b opinions
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_b_w124) |> 
+  mutate(sm_pref_opinions = fct_collapse(newsuse_plat_b_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#newsuse_plat_c in depth info
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_c_w124) |> 
+  mutate(sm_pref_indepth = fct_collapse(newsuse_plat_c_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#news_plat_d up to date info
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_d_w124) |> 
+  mutate(sm_pref_uptodate = fct_collapse(newsuse_plat_d_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#news_plat_e info that impacts the respondent
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_e_w124) |> 
+  mutate(sm_pref_impactsr = fct_collapse(newsuse_plat_e_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+
+#change column type to double for newsuse variables
+#basic facts
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_basicfacts = as.numeric(as.character(sm_pref_basicfacts))) 
+#opinion
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_opinions = as.numeric(as.character(sm_pref_basicfacts))) 
+#indepth
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_indepth = as.numeric(as.character(sm_pref_basicfacts))) 
+#uptodate
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_uptodate = as.numeric(as.character(sm_pref_basicfacts))) 
+#impactsr
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_impactsr = as.numeric(as.character(sm_pref_basicfacts))) 
+
+#create the index variable for social media preference
+amertrends_subset <- amertrends_subset |> 
+  drop_na() |> 
+  rowwise() |> 
+  mutate(sm_pref_index = sum(c(sm_pref_basicfacts, sm_pref_opinions, sm_pref_indepth, sm_pref_uptodate, sm_pref_impactsr))) 
+
+#re-level newssource_plat_e: how frequently they get their news from social medi
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_freq = fct_recode(newssource_e_w124, 
+                              "5" = "1",
+                              "4" = "2",
+                              "3" = "3",
+                              "2" = "4",
+                              "1" = "5")) 
+```
 
 ::: {style="text-align: left;"}
 ## Introduction
@@ -49,31 +195,39 @@ ggplot(amertrends_subset) +
        title = "Distribution of Social Media Prefence Index Scores") +
   scale_fill_manual(values = c("turquoise3", "blue4"))
 ```
-Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%).
+Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%) (see table 2). 
 
 ## Appendix
 Table 1. Frequency table for age categories.
-```{r echo: false}
+```{r}
+#| echo: FALSE
+
 frq(amertrends_subset$age, out = "v")
 ```
 
 Table 2. Frequency table for income categories.
-```{r echo:false}
+```{r}
+#| echo: FALSE
 frq(amertrends_subset$income, out = "v")
 ```
 
 Table 3. Frequency table for race categories.
 ```{r}
+#| echo: FALSE
 frq(amertrends_subset$race_1, out = "v")
 ```
 
 Table 4. Frequency table for economic perception categories.
-```{r echo:false}
+```{r}
+#| echo: FALSE
+
 frq(amertrends_subset$econ_percep, out = "v")
 ```
 
 Table 5. Frequency table for political leaning categories.
-```{r echo:false}
+```{r}
+#| echo: FALSE
+
 frq(amertrends_subset$pol_lean, out = "v")
 ```
 
