@@ -15,6 +15,7 @@ library(readxl)
 library(tidyverse)
 library(ggplot2)
 library(forcats)
+library(sjmisc)
 ```
 
 ```{r load-data}
@@ -173,7 +174,63 @@ amertrends_subset <- amertrends_subset |>
 
 ```
 
-```{r}
+```{r desc-stats}
+#age category counts
+#recode to more descriptive values
+amertrends_subset <- amertrends_subset |> 
+  mutate(age = fct_recode(f_agecat,
+                          "18-29" = "1",
+                          "30-49" = "2",
+                          "50-64" = "3",
+                          "65+" = "4")) 
+#freq table for age
+frq(amertrends_subset$age, out = "v")
+
+#recode race
+amertrends_subset <- amertrends_subset |> 
+  mutate(race_1 = fct_recode(f_racecmb,
+                          "White" = "1",
+                          "Black" = "2",
+                          "Asian" = "3",
+                          "Mixed Race" = "4",
+                          "Other" = "5")) 
+#freq table for race
+frq(amertrends_subset$race_1, out = "v")
+
+#recode party lean
+amertrends_subset <- amertrends_subset |> 
+  mutate(pol_lean = fct_recode(f_partysum_final,
+                          "Republican, or leans Republican" = "1",
+                          "Democrat, or leans Democrat" = "2",
+                          "Other" = "9")) 
+#freq table for pol party
+frq(amertrends_subset$pol_lean, out = "v")
+
+#recode income
+amertrends_subset <- amertrends_subset |> 
+  mutate(income = fct_recode(f_inc_tier2,
+                          "Lower income" = "1",
+                          "Middle income" = "2",
+                          "Upper income" = "3")) 
+#freq table for income
+frq(amertrends_subset$income, out = "v")
+
+#freq table for econ perception
+frq(amertrends_subset$econ_percep, out = "v")
+
+#freq table for autoc support
+#0 = doesn't support
+#1 = does support
+frq(amertrends_subset$autoc_support, out = "v")
+
+#boxplot for sm_pref score
+amertrends_subset |> 
+  ggplot() +
+  geom_boxplot(aes(sm_pref_index))
+
+#histogram too?
+
+
 
 ```
 
