@@ -1,9 +1,9 @@
 ---
 title: ''
 output:
-  word_document:
-    df_print: paged
   html_document:
+    df_print: paged
+  word_document:
     df_print: paged
 ---
 
@@ -18,7 +18,7 @@ output:
 ^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
 
 ```{r setup}
-#| echo: FALSE
+#| include: FALSE
 library(haven)
 library(readxl) 
 library(tidyverse)
@@ -46,9 +46,6 @@ amertrends_subset <- janitor::clean_names(amertrends_subset)
 #converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
 amertrends_subset <- amertrends_subset |> 
   mutate(across(everything(), ~ replace(.x, .x == 99, NA)))
-
-#visualize missing data in the subset
-visdat::vis_miss(amertrends_subset)
 
 #redefine column types to factor since they represent ordered categories/likert scale 
 amertrends_subset <- amertrends_subset |> 
@@ -159,6 +156,53 @@ amertrends_subset <- amertrends_subset |>
                               "3" = "3",
                               "2" = "4",
                               "1" = "5")) 
+
+#age category counts
+#recode to more descriptive values
+amertrends_subset <- amertrends_subset |> 
+  mutate(age = fct_recode(f_agecat,
+                          "18-29" = "1",
+                          "30-49" = "2",
+                          "50-64" = "3",
+                          "65+" = "4")) 
+
+#recode race
+amertrends_subset <- amertrends_subset |> 
+  mutate(race_1 = fct_recode(f_racecmb,
+                          "White" = "1",
+                          "Black" = "2",
+                          "Asian" = "3",
+                          "Mixed Race" = "4",
+                          "Other" = "5")) 
+
+#recode party lean
+amertrends_subset <- amertrends_subset |> 
+  mutate(pol_lean = fct_recode(f_partysum_final,
+                          "Republican, or leans Republican" = "1",
+                          "Democrat, or leans Democrat" = "2",
+                          "Other" = "9")) 
+
+#recode income
+amertrends_subset <- amertrends_subset |> 
+  mutate(income = fct_recode(f_inc_tier2,
+                          "Lower income" = "1",
+                          "Middle income" = "2",
+                          "Upper income" = "3"))
+
+#newssource
+#recoding for desc stats table
+amertrends_subset <- amertrends_subset |> 
+  mutate(newssource = fct_recode(newssource_e_w124,
+                          "Lower income" = "1",
+                          "Middle income" = "2",
+                          "Upper income" = "3")) 
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_freq_cat = fct_recode(newssource_e_w124, 
+                                  "Extremely often" = "5",
+                                  "Fairly often" = "4",
+                                  "Sometimes" = "3",
+                                  "Rarely" = "2",
+                                  "Never" = "1")) 
 ```
 
 ::: {style="text-align: left;"}
@@ -176,13 +220,15 @@ By investigating these research questions, this paper will contribute to our und
 
 The primary dependent variable in this study is Support for Autocratic Governance, as represented by the variable *POLSYS_AUTOC_W124*, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused.” This was re-coded into “Supports” (from “Very good” and “Somewhat good”) and “Does not support” (from “Somewhat bad” and “Very bad”).
 
-	Independent variables include demographic characteristics such as age, race, gender, religion, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. These were collapsed into “Good” and “Bad.” Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* (how often respondents get news, facts, and opinions about issues or events from social media sites) and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124* (whether respondents prefer getting certain information from news outlets, social media, both, or neither). The *NEWSUSE* variables were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each *NEWSUSE* variable were combined within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped. 
-	
+Independent variables include demographic characteristics such as age, race, gender, religion, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. These were collapsed into “Good” and “Bad.” Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* (how often respondents get news, facts, and opinions about issues or events from social media sites) and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124* (whether respondents prefer getting certain information from news outlets, social media, both, or neither). The *NEWSUSE* variables were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each *NEWSUSE* variable were combined within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped.
+
 Frequency tables were used to summarize the counts and proportions for control variables including age, income, race, and political party categories. They were also used to summarize the response and some explanatory variables, including economic perception, social media use frequency, and support for autocratic leadership. The social media preference index score distribution was illustrated with a stacked density plot with autocratic support. The planned modeling method is multiple logistic regression. We will develop the model to confirm our theory, therefore we will include the aforementioned variables relevant to our theory, and use stepwise selection to determine which additional demographic variables should be included. However, since both *NEWSSOURCE* and *NEWSUSE* measure social media behavior, they may be collinear. To address this, we will consider models that include each of them individually, in addition to a model with both. The model with the lowest AIC and highest number of significant predictors will be selected. 
 
-##Results
+## Results
+
 The average social media preference index score for the sample was 3.80, with standard deviation 3.29, while the median was 5.00. Thirty-eight respondents (32.48%) supported autocratic leadership and 79 (67.52%) did not. The distribution of the scores for each group is presented in the stacked density figure below.
 ```{r}
+#| echo: FALSE
 ggplot(amertrends_subset) +
   geom_density(aes(x = sm_pref_index,
                    fill = autoc_support_cat), 
@@ -195,13 +241,13 @@ ggplot(amertrends_subset) +
        title = "Distribution of Social Media Prefence Index Scores") +
   scale_fill_manual(values = c("turquoise3", "blue4"))
 ```
-Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%) (see table 2). 
+
+Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%) (see table 2). Seventy-nine were White (67.52%), 2 were Black (1.71%), 3 were Asian (2.56%), 6 were Mixed Race (5.13%), and 27 were some other race (23.08%). The 37 respondents who perceived the economy as good constituted 31.62% of the sample, while 80 thought the economy as bad (68.38%). Finally, 56 respondents were republicans or leaned republican (47.86%), while 61 were democrats or leaned democrat (52.14%).
 
 ## Appendix
 Table 1. Frequency table for age categories.
 ```{r}
 #| echo: FALSE
-
 frq(amertrends_subset$age, out = "v")
 ```
 
@@ -220,14 +266,12 @@ frq(amertrends_subset$race_1, out = "v")
 Table 4. Frequency table for economic perception categories.
 ```{r}
 #| echo: FALSE
-
 frq(amertrends_subset$econ_percep, out = "v")
 ```
 
 Table 5. Frequency table for political leaning categories.
 ```{r}
 #| echo: FALSE
-
 frq(amertrends_subset$pol_lean, out = "v")
 ```
 
@@ -262,7 +306,6 @@ Wahba, L. L. (2022). Innocents, psychopaths and the imagination. Journal of Anal
 
 Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
 
-## Codes
 
 
 :::
