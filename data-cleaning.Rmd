@@ -1,0 +1,170 @@
+---
+title: "data-cleaning"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+library(haven)
+library(readxl) 
+library(tidyverse)
+library(ggplot2)
+library(forcats)
+```
+
+```{r load-data}
+#read the data file
+amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
+
+#load the codebook for the data to understand what each variable represents
+amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xlsx")
+```
+
+```{r create-subset}
+#selecting a subset the variables for exploration 
+amertrends_subset <- amertrends |> 
+  select(POLSYS_AUTOC_W124, POLSYS_JUNTA_W124, POLSYS_TECH_W124, POLSYS_REPUBLIC_W124, POLSYS_DIRECTDEM_W124, ECON_SIT_W124, SATISFIED_DEMOCRACY_W124, FAVPOL_BIDEN_W124, FAVPOL_TRUMP_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, OFFICIALS_CARE_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_CREGION, F_CDIVISION, F_USR_SELFID, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_REG, F_INC_SDT1, F_IDEO, F_INC_TIER2)
+
+#change variable names to snake_case
+amertrends_subset <- janitor::clean_names(amertrends_subset)
+
+#converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(everything(), ~ replace(.x, .x == 99, NA)))
+
+#visualize missing data in the subset
+visdat::vis_miss(amertrends_subset)
+
+#inspect the column types
+glimpse(amertrends_subset)
+
+#redefine column types to factor since they represent ordered categories/likert scale 
+amertrends_subset <- amertrends_subset |> 
+  mutate(across(where(is.numeric), as.factor))
+
+str(amertrends_subset)
+```
+
+```{r autoc_support}
+#make the response autoc variable binary/logical so it will work in the logistic model
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support = fct_collapse(polsys_autoc_w124,
+                                    `1` = c("1", "2"),
+                                    `0` = c("3", "4"))) 
+#change column type to logical
+```
+
+```{r econ_perception}
+#defining the levels of key explanatory variables
+#econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels)
+amertrends_subset <- amertrends_subset|> 
+  drop_na(econ_sit_w124) |> 
+  mutate(econ_sit_w124 = fct_recode(econ_sit_w124,
+                          "very good" = "1",
+                          "somewhat good" = "2",
+                          "somewhat bad" = "3",
+                          "very bad" = "4")) 
+
+#bar chart for econ_sit_w124 shows most are in the somewhat bad/good categories, fewer people chose the extremes
+ggplot(amertrends_subset) +
+  geom_bar(aes(econ_sit_w124))
+
+#since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
+amertrends_subset <- amertrends_subset |> 
+  mutate(econ_perception = fct_collapse(econ_sit_w124,
+                                      good = c("very good", "somewhat good"),
+                                      bad = c("very bad", "somewhat bad")))
+```
+
+```{r social_media}
+#creating social media reliance index variable
+#news_use variables have responses 1) prefer news outlets, 2) prefer social media, 3) prefer both the same amount, 4) neither
+#can re-code into social media preference and non-social media preference? make binary, then compute into an index score from 0-1? 
+#news_use measures which source they prefer (soc media or news outlets), while news_source measures how often they get info from social media. Note that news_source needs to be re-coded so that higher values equal higher frequency.
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_a_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_b_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_c_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_d_w124))
+
+ggplot(amertrends_subset) + 
+  geom_bar(aes(x = newsuse_plat_e_w124))
+
+#re-coding newsuse variables
+#newsuse_plat_a basic facts
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_a_w124) |> 
+  mutate(sm_pref_basicfacts = fct_collapse(newsuse_plat_a_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#newsuse_plat_b opinions
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_b_w124) |> 
+  mutate(sm_pref_opinions = fct_collapse(newsuse_plat_b_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#newsuse_plat_c in depth info
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_c_w124) |> 
+  mutate(sm_pref_indepth = fct_collapse(newsuse_plat_c_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#news_plat_d up to date info
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_d_w124) |> 
+  mutate(sm_pref_uptodate = fct_collapse(newsuse_plat_d_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+#news_plat_e info that impacts the respondent
+amertrends_subset <- amertrends_subset |> 
+  drop_na(newsuse_plat_e_w124) |> 
+  mutate(sm_pref_impactsr = fct_collapse(newsuse_plat_e_w124,
+                                      `2` = c("2"),
+                                      `1` = c("3"),
+                                      `0` = c("1", "4"))) 
+
+#change column type to double for newsuse variables
+#basic facts
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_basicfacts = as.numeric(as.character(sm_pref_basicfacts))) 
+#opinion
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_opinions = as.numeric(as.character(sm_pref_basicfacts))) 
+#indepth
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_indepth = as.numeric(as.character(sm_pref_basicfacts))) 
+#uptodate
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_uptodate = as.numeric(as.character(sm_pref_basicfacts))) 
+#impactsr
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_pref_impactsr = as.numeric(as.character(sm_pref_basicfacts))) 
+
+#create the index variable for social media preference
+amertrends_subset <- amertrends_subset |> 
+  drop_na() |> 
+  rowwise() |> 
+  mutate(sm_pref_index = sum(c(sm_pref_basicfacts, sm_pref_opinions, sm_pref_indepth, sm_pref_uptodate, sm_pref_impactsr))) 
+
+#re-level newssource_plat_e: how frequently they get their news from social medi
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_freq = fct_recode(newssource_e_w124, 
+                              "5" = "1",
+                              "4" = "2",
+                              "3" = "3",
+                              "2" = "4",
+                              "1" = "5")) 
+
+```
+
+
+
