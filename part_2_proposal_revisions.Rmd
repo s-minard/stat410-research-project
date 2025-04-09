@@ -207,6 +207,22 @@ amertrends_subset <- amertrends_subset |>
 amertrends_subset <- amertrends_subset |> 
   mutate(sm_pref_impactsr = as.numeric(as.character(sm_pref_basicfacts))) 
 
+#create the index variable for social media preference
+amertrends_subset <- amertrends_subset |> 
+  drop_na() |> 
+  rowwise() |> 
+  mutate(sm_pref_index = sum(c(sm_pref_basicfacts, sm_pref_opinions, sm_pref_indepth, sm_pref_uptodate, sm_pref_impactsr))) 
+
+#re-level newssource_plat_e: how frequently they get their news from social medi
+amertrends_subset <- amertrends_subset |> 
+  mutate(sm_freq = fct_recode(newssource_e_w124, 
+                              "5" = "1",
+                              "4" = "2",
+                              "3" = "3",
+                              "2" = "4",
+                              "1" = "5")) 
+
+
 
 ```
 :::
