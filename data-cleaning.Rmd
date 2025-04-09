@@ -3,6 +3,12 @@ title: "data-cleaning"
 output: html_document
 ---
 
+## Variable guide
+
+autoc_support: 0 - does not support; 1 - supports
+econ_percep: bad, good
+
+
 ```{r setup, echo=FALSE}
 library(haven)
 library(readxl) 
@@ -22,7 +28,7 @@ amertrends_codebook <- read_excel("data/data-raw/W124_Mar23/ATP W124 Codebook.xl
 ```{r create-subset}
 #selecting a subset the variables for exploration 
 amertrends_subset <- amertrends |> 
-  select(POLSYS_AUTOC_W124, POLSYS_JUNTA_W124, POLSYS_TECH_W124, POLSYS_REPUBLIC_W124, POLSYS_DIRECTDEM_W124, ECON_SIT_W124, SATISFIED_DEMOCRACY_W124, FAVPOL_BIDEN_W124, FAVPOL_TRUMP_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, OFFICIALS_CARE_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_CREGION, F_CDIVISION, F_USR_SELFID, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_REG, F_INC_SDT1, F_IDEO, F_INC_TIER2)
+  select(POLSYS_AUTOC_W124, ECON_SIT_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_INC_SDT1, F_IDEO, F_INC_TIER2)
 
 #change variable names to snake_case
 amertrends_subset <- janitor::clean_names(amertrends_subset)
@@ -34,14 +40,9 @@ amertrends_subset <- amertrends_subset |>
 #visualize missing data in the subset
 visdat::vis_miss(amertrends_subset)
 
-#inspect the column types
-glimpse(amertrends_subset)
-
 #redefine column types to factor since they represent ordered categories/likert scale 
 amertrends_subset <- amertrends_subset |> 
   mutate(across(where(is.numeric), as.factor))
-
-str(amertrends_subset)
 ```
 
 ```{r autoc_support}
@@ -50,7 +51,13 @@ amertrends_subset <- amertrends_subset |>
   mutate(autoc_support = fct_collapse(polsys_autoc_w124,
                                     `1` = c("1", "2"),
                                     `0` = c("3", "4"))) 
-#change column type to logical
+#change column type to numeric
+#or logical if necessary
+#amertrends_subset <- amertrends_subset |> 
+  #mutate(autoc_support = as.logical(as.numeric(as.character(autoc_support)))) |> 
+  #select(autoc_support)
+amertrends_subset <- amertrends_subset |> 
+  mutate(autoc_support = as.numeric(as.character(autoc_support))) 
 ```
 
 ```{r econ_perception}
@@ -70,7 +77,7 @@ ggplot(amertrends_subset) +
 
 #since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
 amertrends_subset <- amertrends_subset |> 
-  mutate(econ_perception = fct_collapse(econ_sit_w124,
+  mutate(econ_percep = fct_collapse(econ_sit_w124,
                                       good = c("very good", "somewhat good"),
                                       bad = c("very bad", "somewhat bad")))
 ```
@@ -166,5 +173,8 @@ amertrends_subset <- amertrends_subset |>
 
 ```
 
+```{r}
+
+```
 
 
