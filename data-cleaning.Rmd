@@ -164,14 +164,14 @@ amertrends_subset <- amertrends_subset |>
 #freq table for age
 frq(amertrends_subset$age, out = "v")
 
-#recode race
+#recode race to binary 
 amertrends_subset <- amertrends_subset |> 
-  mutate(race_1 = fct_recode(f_racecmb,
-                          "White" = "1",
-                          "Black" = "2",
-                          "Asian" = "3",
-                          "Mixed Race" = "4",
-                          "Other" = "5")) 
+  mutate(race_1 = fct_collapse(f_racecmb,
+                          "Non-White" =  c("2", "3", "4", "5"),
+                          "White" = "1")) |> 
+  mutate(race_1 = fct_relevel(white,
+                             "White", after = 1)) 
+
 #freq table for race
 frq(amertrends_subset$race_1, out = "v")
 
@@ -252,7 +252,7 @@ frq(amertrends_subset$sm_freq_cat, out = "v")
 
 ```{r model_v1}
 #model v1
-autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(income), family = binomial(link = "logit"), data = amertrends_subset)
+autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_subset)
 summary(autoc_lm_v1)
 car::vif(autoc_lm_v1)
 
@@ -270,26 +270,41 @@ plot(roc_v1, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v1",
 auc(roc_v1)
 
 ```
+
+
 ```{r stepwise}
-#creating "big" model 
-big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(income), family = binomial(link = "logit"), data = amertrends_subset)
-#creating "small" model with only theory-driven variables that must be included at minimum, but no controls
-small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep), family = binomial(link = "logit"), data = amertrends_subset)
 
-#create stepwise model
-step_v1 <- step(big_v1, scope = list(lower =  small_v1, upper = big_v1), direction = "both", trace = TRUE)
-
-#model parameter estimates and significance testing
-summary(step_v1)
-
-# Drop NA values for all variables used in either model
-clean_data <- amertrends_subset |> 
+#drop NA values for all variables used in either model
+amertrends_subset <- amertrends_subset |> 
   drop_na(autoc_support, sm_pref_index, sm_freq, econ_percep, age, race_1, pol_lean, income)
 
 # Fit the lower and upper models using the cleaned data
-small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep), family = binomial(link = "logit"), data = clean_data)
-big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(income), family = binomial(link = "logit"), data = clean_data)
+small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = clean_data)
+big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = clean_data)
 # Stepwise selection
-step_model <- step(big_v1, scope = list(lower = small_v1, upper = big_v1), direction = "both")
+autoc_lm_v2 <- step(big_v1, scope = list(lower = small_v1, upper = big_v1), direction = "both")
+#final selected model (based on AIC) includes just race and income as controls
+
+#model parameter estimates and significance testing
+summary(autoc_lm_v2)
+
+#ROC curve for v2
+#predicted probabilities
+predicted_probs_v2 <- predict(autoc_lm_v2, type = "response")
+#actual outcomes
+actual_outcomes_v2 <- autoc_lm_v2$y
+#ROC
+roc_v2 <- roc(actual_outcomes_v2, predicted_probs_v2)
+#plot the curve
+plot(roc_v2, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v2", 
+     col = "blue", xlab = "False Positive Rate (1 - Specificity)", 
+     ylab = "True Positive Rate (Sensitivity)")
+auc(roc_v2)
+
+```
+
+```{r}
+#based on the ANOVA, decide not to include the extra demographic variable age (has three categories, none significant on wald z test)
+anova(autoc_lm_v2, autoc_lm_v1, test = "Chisq")
 ```
 
