@@ -141,16 +141,19 @@ amertrends_subset <- amertrends_subset |>
   mutate(sm_pref_index = sum(as.numeric(as.character(c_across(starts_with("sm_pref_")))))) |> 
   ungroup() 
 
-#re-level newssource_plat_e: how frequently they get their news from social medi
+#re-level newssource_plat_e: how frequently they get their news from social media
 amertrends_subset <- amertrends_subset |> 
   mutate(sm_freq = fct_recode(newssource_e_w124, 
                               "5" = "1",
                               "4" = "2",
                               "3" = "3",
                               "2" = "4",
-                              "1" = "5")) 
+                              "1" = "5"),
+         sm_freq = as.numeric(as.character(sm_freq))) 
+
 
 ```
+
 
 ```{r desc-stats}
 #age category counts
@@ -207,10 +210,12 @@ frq(amertrends_subset$autoc_support_cat, out = "v")
 #boxplot for sm_pref score
 amertrends_subset |> 
   ggplot() +
-  geom_boxplot(aes(x = sm_pref_index),
+  geom_boxplot(aes(x = sm_pref_index,
+                   y = pol_lean),
                fill = "blue4",
                alpha = 0.75) +
-  labs(x = "Social Media Preference Index Score") +
+  labs(x = "Social Media Preference Index Score",
+       y = "Political Leaning") +
   theme_minimal()
 #density
 ggplot(amertrends_subset) +
@@ -223,7 +228,7 @@ ggplot(amertrends_subset) +
        y = "Density",
        fill = "Support for Autocratic Leadership",
        title = "Distribution of Social Media Prefence Index Scores") +
-  scale_fill_manual(values = c("turquoise3", "blue4"))
+  scale_fill_manual(values = c("turquoise3", "blue4")) 
 
 #summary stats for sm_pref_index
 summary(amertrends_subset$sm_pref_index)
@@ -307,4 +312,24 @@ auc(roc_v2)
 #based on the ANOVA, decide not to include the extra demographic variable age (has three categories, none significant on wald z test)
 anova(autoc_lm_v2, autoc_lm_v1, test = "Chisq")
 ```
+```{r}
+#write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
+```
 
+
+
+Removed this from the paper since we need better figures
+```{r}
+#| echo: FALSE
+ggplot(amertrends_subset) +
+  geom_density(aes(x = sm_pref_index,
+                   fill = autoc_support_cat), 
+               position = "stack", 
+               alpha = 0.75) +
+  theme_bw() +
+  labs(x = "Social Media Preference Index Score",
+       y = "Density",
+       fill = "Support for Autocratic Leadership",
+       title = "Distribution of Social Media Prefence Index Scores") +
+  scale_fill_manual(values = c("turquoise3", "blue4"))
+```
