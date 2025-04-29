@@ -19,6 +19,7 @@ library(tidyverse)
 library(ggplot2)
 library(forcats)
 library(sjmisc)
+library(pROC)
 ```
 
 ```{r load-data}
@@ -54,7 +55,9 @@ amertrends_subset <- amertrends_subset |>
 amertrends_subset <- amertrends_subset |> 
   mutate(autoc_support = fct_collapse(polsys_autoc_w124,
                                     `1` = c("1", "2"),
-                                    `0` = c("3", "4"))) 
+                                    `0` = c("3", "4"))) |> 
+  drop_na(autoc_support)
+
 amertrends_subset <- amertrends_subset |> 
   mutate(autoc_support_cat = fct_collapse(polsys_autoc_w124,
                                     `Supports` = c("1", "2"),
@@ -73,7 +76,7 @@ amertrends_subset <- amertrends_subset |>
 #defining the levels of key explanatory variables
 #econ_sit_w124 (may consider collapsing into good/bad rather than keeping 4 levels)
 amertrends_subset <- amertrends_subset|> 
-  drop_na(econ_sit_w124) |> 
+  #drop_na(econ_sit_w124) |> 
   mutate(econ_sit_w124 = fct_recode(econ_sit_w124,
                           "very good" = "1",
                           "somewhat good" = "2",
@@ -97,62 +100,46 @@ amertrends_subset <- amertrends_subset |>
 #re-coding newsuse variables
 #newsuse_plat_a basic facts
 amertrends_subset <- amertrends_subset |> 
-  drop_na(newsuse_plat_a_w124) |> 
+  #drop_na(newsuse_plat_a_w124) |> 
   mutate(sm_pref_basicfacts = fct_collapse(newsuse_plat_a_w124,
                                       `2` = c("2"),
                                       `1` = c("3"),
                                       `0` = c("1", "4"))) 
 #newsuse_plat_b opinions
 amertrends_subset <- amertrends_subset |> 
-  drop_na(newsuse_plat_b_w124) |> 
+  #drop_na(newsuse_plat_b_w124) |> 
   mutate(sm_pref_opinions = fct_collapse(newsuse_plat_b_w124,
                                       `2` = c("2"),
                                       `1` = c("3"),
                                       `0` = c("1", "4"))) 
 #newsuse_plat_c in depth info
 amertrends_subset <- amertrends_subset |> 
-  drop_na(newsuse_plat_c_w124) |> 
+  #drop_na(newsuse_plat_c_w124) |> 
   mutate(sm_pref_indepth = fct_collapse(newsuse_plat_c_w124,
                                       `2` = c("2"),
                                       `1` = c("3"),
                                       `0` = c("1", "4"))) 
 #news_plat_d up to date info
 amertrends_subset <- amertrends_subset |> 
-  drop_na(newsuse_plat_d_w124) |> 
+  #drop_na(newsuse_plat_d_w124) |> 
   mutate(sm_pref_uptodate = fct_collapse(newsuse_plat_d_w124,
                                       `2` = c("2"),
                                       `1` = c("3"),
                                       `0` = c("1", "4"))) 
 #news_plat_e info that impacts the respondent
 amertrends_subset <- amertrends_subset |> 
-  drop_na(newsuse_plat_e_w124) |> 
+  #drop_na(newsuse_plat_e_w124) |> 
   mutate(sm_pref_impactsr = fct_collapse(newsuse_plat_e_w124,
                                       `2` = c("2"),
                                       `1` = c("3"),
                                       `0` = c("1", "4"))) 
 
-#change column type to double for newsuse variables
-#basic facts
-amertrends_subset <- amertrends_subset |> 
-  mutate(sm_pref_basicfacts = as.numeric(as.character(sm_pref_basicfacts))) 
-#opinion
-amertrends_subset <- amertrends_subset |> 
-  mutate(sm_pref_opinions = as.numeric(as.character(sm_pref_basicfacts))) 
-#indepth
-amertrends_subset <- amertrends_subset |> 
-  mutate(sm_pref_indepth = as.numeric(as.character(sm_pref_basicfacts))) 
-#uptodate
-amertrends_subset <- amertrends_subset |> 
-  mutate(sm_pref_uptodate = as.numeric(as.character(sm_pref_basicfacts))) 
-#impactsr
-amertrends_subset <- amertrends_subset |> 
-  mutate(sm_pref_impactsr = as.numeric(as.character(sm_pref_basicfacts))) 
-
 #create the index variable for social media preference
 amertrends_subset <- amertrends_subset |> 
-  drop_na() |> 
+  drop_na(sm_pref_basicfacts, sm_pref_opinions, sm_pref_indepth, sm_pref_uptodate, sm_pref_impactsr) |> 
   rowwise() |> 
-  mutate(sm_pref_index = sum(c(sm_pref_basicfacts, sm_pref_opinions, sm_pref_indepth, sm_pref_uptodate, sm_pref_impactsr))) 
+  mutate(sm_pref_index = sum(as.numeric(as.character(c_across(starts_with("sm_pref_")))))) |> 
+  ungroup() 
 
 #re-level newssource_plat_e: how frequently they get their news from social medi
 amertrends_subset <- amertrends_subset |> 
@@ -193,7 +180,10 @@ amertrends_subset <- amertrends_subset |>
   mutate(pol_lean = fct_recode(f_partysum_final,
                           "Republican, or leans Republican" = "1",
                           "Democrat, or leans Democrat" = "2",
-                          "Other" = "9")) 
+                          "Other" = "9"),
+         pol_lean = fct_relevel(pol_lean, 
+                                "Republican, or leans Republican", after = 1))
+  
 #freq table for pol party
 frq(amertrends_subset$pol_lean, out = "v")
 
@@ -212,7 +202,7 @@ frq(amertrends_subset$econ_percep, out = "v")
 #freq table for autoc support
 #0 = doesn't support
 #1 = does support
-frq(amertrends_subset$autoc_support_cat, out = "v")
+frq(amertrends_subset$autoc_support_cat, out = "v") 
 
 #boxplot for sm_pref score
 amertrends_subset |> 
@@ -238,10 +228,13 @@ ggplot(amertrends_subset) +
 #summary stats for sm_pref_index
 summary(amertrends_subset$sm_pref_index)
 sd(amertrends_subset$sm_pref_index)
+ggplot(amertrends_subset) +
+  geom_histogram(aes(x = sm_pref_index))
+
 #newssource
 #recoding for desc stats table
 amertrends_subset <- amertrends_subset |> 
-  mutate(newssource = fct_recode(newssource_e_w124,
+  mutate(income = fct_recode(f_inc_tier2,
                           "Lower income" = "1",
                           "Middle income" = "2",
                           "Upper income" = "3")) 
@@ -254,6 +247,26 @@ amertrends_subset <- amertrends_subset |>
                                   "Never" = "1")) 
 #freq table for sm_freq_cat
 frq(amertrends_subset$sm_freq_cat, out = "v")
+
+```
+
+```{r model}
+autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(income), family = binomial(link = "logit"), data = amertrends_subset)
+summary(autoc_lm_v1)
+car::vif(autoc_lm_v1)
+
+#predicted probabilities
+predicted_probs_v1 <- predict(autoc_lm_v1, type = "response")
+#actual outcomes
+actual_outcomes_v1 <- autoc_lm_v1$y
+#ROC
+roc_v1 <- roc(actual_outcomes_v1, predicted_probs_v1)
+#plot the curve
+plot(roc_v1, main = "ROC Curve for autoc_lm_v1", col = "blue")
+auc(roc_v1)
+
+
+
 
 ```
 

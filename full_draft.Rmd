@@ -41,7 +41,7 @@ amertrends_subset <- amertrends |>
   select(POLSYS_AUTOC_W124, ECON_SIT_W124, PARTYFAV_REP_W124, PARTYFAV_DEM_W124, PARTY_REPRESENT_W124, NEWSSOURCE_e_W124, NEWSUSE_PLAT_a_W124, NEWSUSE_PLAT_b_W124, NEWSUSE_PLAT_c_W124, NEWSUSE_PLAT_d_W124, NEWSUSE_PLAT_e_W124, F_AGECAT, F_GENDER, F_EDUCCAT, F_EDUCCAT2, F_HISP, F_HISP_ORIGIN, F_RACECMB, F_RACETHNMOD, F_MARITAL, F_RELIG, F_BORN, F_RELIGCAT1, F_PARTY_FINAL, F_PARTYLN_FINAL, F_PARTYSUM_FINAL, F_PARTYSUMIDEO_FINAL, F_INC_SDT1, F_IDEO, F_INC_TIER2)
 
 #change variable names to snake_case
-amertrends_subset <- janitor::clean_names(amertrends_subset)
+amertrends_subset <- janitor::clean_names(amertrends_subset) 
 
 #converting 99 to NA (99 means "refused"/didn't answer that question so it must be treated as NA)
 amertrends_subset <- amertrends_subset |> 
@@ -192,11 +192,6 @@ amertrends_subset <- amertrends_subset |>
 #newssource
 #recoding for desc stats table
 amertrends_subset <- amertrends_subset |> 
-  mutate(newssource = fct_recode(newssource_e_w124,
-                          "Lower income" = "1",
-                          "Middle income" = "2",
-                          "Upper income" = "3")) 
-amertrends_subset <- amertrends_subset |> 
   mutate(sm_freq_cat = fct_recode(newssource_e_w124, 
                                   "Extremely often" = "5",
                                   "Fairly often" = "4",
@@ -208,7 +203,7 @@ amertrends_subset <- amertrends_subset |>
 ::: {style="text-align: left;"}
 ## Introduction
 
-As of 2021, 70% of the world’s population, or 5.4 billion people, live under an autocratic regime (Boese et al., 2022). Autocracies are a form of government “by a single person or small group that has unlimited power or authority” (Cambridge University Press & Assessment, n.d.), and they often arise from populist movements. Populism is an exclusionary, anti-elitist, anti-pluralist political ideology based on the idea that the “true people” are under threat from some kind of elite enemy, be it an economic, political, racial, or foreign one (Berlin et al., 1968). The ideology can fuel support for autocratic leaders who persuade the public that only they can protect them from perceived enemies, thus justifying the consolidation of executive power without accountability (Al Waroi et al., 2024; Baturo et al., 2024). Donald Trump’s populist messaging has galvanized many Americans against a variety of perceived enemies, including racial and gender minorities, immigrants, and other vaguely defined “elites.” Since regaining the presidency in 2025, Trump has taken steps to consolidate his power and remove checks and balances, thus bringing the United States closer to an authoritarian autocracy– and many Americans wholeheartedly support this transformation. Therefore, this paper seeks to understand the factors associated with support for autocratic leadership among Americans. 
+As of 2021, 70% of the world’s population, or 5.4 billion people, live under an autocratic regime (Boese et al., 2022). Autocracies are a form of government “by a single person or small group that has unlimited power or authority” (Cambridge University Press & Assessment, n.d.), and they often arise from populist movements. Populism is an exclusionary, anti-elitist, anti-pluralist political ideology based on the idea that the “true people” are under threat from some kind of elite enemy, be it an economic, political, racial, or foreign one (Berlin et al., 1968). The ideology can fuel support for autocratic leaders who persuade the public that only they can protect them from perceived enemies, thus justifying the consolidation of executive power without accountability (Al Waroi et al., 2024; Baturo et al., 2024). Donald Trump’s populist messaging has galvanized many Americans against a variety of perceived enemies, including racial and gender minorities, immigrants, and other vaguely defined “elites.” Since regaining the presidency in 2025, Trump has taken steps to consolidate his power and remove checks and balances, thus bringing the United States closer to an authoritarian autocracy– and many Americans wholeheartedly support this transformation. Therefore, this paper seeks to understand the factors associated with support for autocratic leadership among Americans.
 
 Populist movements and the autocratic leaders they support are often fueled by anxiety and subjective perceptions of economic insecurity, irrespective of whether objective measures of hardship are present (Gidron & Hall, 2017). In other words, actual economic insecurity is not necessary, only the perception of insecurity. Moreover, it is the perception of economic insecurity at the macro level that significantly predicts these attitudes, not at the micro level (Watson et al., 2021). Severe real-world threats can be especially impactful in this regard. For example, through their analysis of the Covid-19 pandemic and the subsequent economic downturn in Italy, Rocatto et al. (2020) found that times of uncertainty and hardship can drive people toward anti-democratic, authoritarian, and autocratic leaders because they offer a restored sense of control over their social world. Given that a recent Pew Research Center poll found Americans’ current economic ratings to be predominantly negative (Cerda, 2025), it is important to test the relationship between subjective economic insecurity and anti-democratic sentiment in the US. Therefore, our first research question is as follows: *How does perceived macro level economic insecurity relate to support for autocratic leadership?*
 
@@ -222,11 +217,12 @@ The primary dependent variable in this study is Support for Autocratic Governanc
 
 Independent variables include demographic characteristics such as age, race, gender, religion, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. These were collapsed into “Good” and “Bad.” Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* (how often respondents get news, facts, and opinions about issues or events from social media sites) and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124* (whether respondents prefer getting certain information from news outlets, social media, both, or neither). The *NEWSUSE* variables were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each *NEWSUSE* variable were combined within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped.
 
-Frequency tables were used to summarize the counts and proportions for control variables including age, income, race, and political party categories. They were also used to summarize the response and some explanatory variables, including economic perception, social media use frequency, and support for autocratic leadership. The social media preference index score distribution was illustrated with a stacked density plot with autocratic support. The planned modeling method is multiple logistic regression. We will develop the model to confirm our theory, therefore we will include the aforementioned variables relevant to our theory, and use stepwise selection to determine which additional demographic variables should be included. However, since both *NEWSSOURCE* and *NEWSUSE* measure social media behavior, they may be collinear. To address this, we will consider models that include each of them individually, in addition to a model with both. The model with the lowest AIC and highest number of significant predictors will be selected. 
+Frequency tables were used to summarize the counts and proportions for control variables including age, income, race, and political party categories. They were also used to summarize the response and some explanatory variables, including economic perception, social media use frequency, and support for autocratic leadership. The social media preference index score distribution was illustrated with a stacked density plot with autocratic support. The planned modeling method is multiple logistic regression. We will develop the model to confirm our theory, therefore we will include the aforementioned variables relevant to our theory, and use stepwise selection to determine which additional demographic variables should be included. However, since both *NEWSSOURCE* and *NEWSUSE* measure social media behavior, they may be collinear. To address this, we will consider models that include each of them individually, in addition to a model with both. The model with the lowest AIC and highest number of significant predictors will be selected.
 
 ## Results
 
 The average social media preference index score for the sample was 3.80, with standard deviation 3.29, while the median was 5.00. Thirty-eight respondents (32.48%) supported autocratic leadership and 79 (67.52%) did not. The distribution of the scores for each group is presented in the stacked density figure below.
+
 ```{r}
 #| echo: FALSE
 ggplot(amertrends_subset) +
@@ -245,36 +241,41 @@ ggplot(amertrends_subset) +
 Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%) (see table 2). Seventy-nine were White (67.52%), 2 were Black (1.71%), 3 were Asian (2.56%), 6 were Mixed Race (5.13%), and 27 were some other race (23.08%). The 37 respondents who perceived the economy as good constituted 31.62% of the sample, while 80 thought the economy as bad (68.38%). Finally, 56 respondents were republicans or leaned republican (47.86%), while 61 were democrats or leaned democrat (52.14%).
 
 ## Appendix
+
 Table 1. Frequency table for age categories.
+
 ```{r}
 #| echo: FALSE
 frq(amertrends_subset$age, out = "v")
 ```
 
 Table 2. Frequency table for income categories.
+
 ```{r}
 #| echo: FALSE
 frq(amertrends_subset$income, out = "v")
 ```
 
 Table 3. Frequency table for race categories.
+
 ```{r}
 #| echo: FALSE
 frq(amertrends_subset$race_1, out = "v")
 ```
 
 Table 4. Frequency table for economic perception categories.
+
 ```{r}
 #| echo: FALSE
 frq(amertrends_subset$econ_percep, out = "v")
 ```
 
 Table 5. Frequency table for political leaning categories.
+
 ```{r}
 #| echo: FALSE
 frq(amertrends_subset$pol_lean, out = "v")
 ```
-
 
 ## References
 
@@ -305,7 +306,4 @@ Roccato, M., Cavazza, N., Colloca, P., & Russo, S. (2020). A democratic emergenc
 Wahba, L. L. (2022). Innocents, psychopaths and the imagination. Journal of Analytical Psychology, 67(1), 183–195. <https://doi.org/10.1111/1468-5922.12773>
 
 Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
-
-
-
 :::
