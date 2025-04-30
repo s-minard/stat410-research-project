@@ -26,6 +26,7 @@ library(tidyverse)
 library(ggplot2)
 library(forcats)
 library(sjmisc)
+library(ggridges)
 
 amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv")
 ```
@@ -51,11 +52,30 @@ Frequency tables were used to summarize the counts and proportions for control v
 
 ## Results
 
-The average social media preference index score for the sample was 3.80, with standard deviation 3.29, while the median was 5.00. Thirty-eight respondents (32.48%) supported autocratic leadership and 79 (67.52%) did not. The distribution of the scores for each group is presented in the stacked density figure below.
+```{r}
+#| label: figure-1
+#| echo: false 
+#| eval: false
 
+#boxplot + ridgelines for sm_pref_index by autoc_support categories
+amertrends_clean |> 
+  ggplot(aes(x = sm_pref_index, 
+             y = autoc_support_cat, 
+             fill = autoc_support_cat)) +
+   geom_density_ridges(scale = 0.55, 
+                       alpha = 0.5) +
+  geom_boxplot(aes(fill = autoc_support_cat),
+               width = 0.25,
+               alpha = 0.75) +
+  theme_light() +
+  scale_fill_manual(values = c("brown1", "turquoise4")) +
+  labs(x = "Social Media Preference Index Score",
+       y = "Attitude Toward \nAutocratic Leadership",
+       title = "Figure 1. Distribution of Social Media Preference Index \nAcross Autocratic Leadership Support Categories") +
+  guides(fill = FALSE) +
+  xlim(0,10)
+```
 
-
-Within the sample, 22 respondents (18.80%) were 18-29 years old, 53 (45.30%) were 30-49 years old, 29 (24.79%) were 50-64 years old, and 13 (11.11%) were over 65 (see table 1). Forty-six respondents (39.32%) were lower income, 55 were middle income (47.01%), and 16 were upper income (13.68%) (see table 2). Seventy-nine were White (67.52%), 2 were Black (1.71%), 3 were Asian (2.56%), 6 were Mixed Race (5.13%), and 27 were some other race (23.08%). The 37 respondents who perceived the economy as good constituted 31.62% of the sample, while 80 thought the economy as bad (68.38%). Finally, 56 respondents were republicans or leaned republican (47.86%), while 61 were democrats or leaned democrat (52.14%).
 
 ## Appendix
 
@@ -93,14 +113,15 @@ amertrends_subset <- amertrends_subset |>
 amertrends_subset <- amertrends_subset |> 
   mutate(autoc_support = fct_collapse(polsys_autoc_w124,
                                     `1` = c("1", "2"),
-                                    `0` = c("3", "4")),
-         autoc_support = as.numeric(as.character(autoc_support)))
+                                    `0` = c("3", "4"))) |> 
+  drop_na(autoc_support)
 
 #make another version with descriptive labels for frequency table
 amertrends_subset <- amertrends_subset |> 
   mutate(autoc_support_cat = fct_collapse(polsys_autoc_w124,
                                     `Supports` = c("1", "2"),
-                                    `Does not support` = c("3", "4"))) 
+                                    `Does not support` = c("3", "4")))  |> 
+  drop_na(autoc_support_cat)
 ```
 
 ```{r}
@@ -225,7 +246,101 @@ amertrends_subset <- amertrends_subset |>
                           "Middle income" = "2",
                           "Upper income" = "3"))
 
-#write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
+#drop NAs to ensure later codes work (especially ROC curve codes)
+amertrends_subset <- amertrends_subset |> 
+  drop_na(autoc_support, sm_pref_index, sm_freq, econ_percep, age, race_1, pol_lean, income)
+
+
+write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
+
+```
+
+```{r}
+#| label: model-v1
+#| echo: false
+#| eval: false
+
+
+
+#creating the first model using all theory-driven variables AND all demographic/control variables
+autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+summary(autoc_lm_v1)
+#check VIF- collinearity issues between sm_pref_index*pol_lean interaction and pol_lean
+car::vif(autoc_lm_v1)
+
+#ROC curve for v1
+#predicted probabilities
+predicted_probs_v1 <- predict(autoc_lm_v1, type = "response")
+#actual outcomes
+actual_outcomes_v1 <- autoc_lm_v1$y
+#ROC plot and AUC
+roc_v1 <- roc(actual_outcomes_v1, predicted_probs_v1)
+plot(roc_v1, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v1", 
+     col = "blue", xlab = "False Positive Rate (1 - Specificity)", 
+     ylab = "True Positive Rate (Sensitivity)")
+auc(roc_v1)
+
+#not a great model, so we will try adjusting which demographic variables are included to see if that improves things
+```
+
+```{r}
+#| label: model-v2
+#| echo: false
+#| eval: false
+
+#stepwise selection to determine best demographic variables for the model
+#fit the lower and upper models
+#lower includes the theory-driven variables that must be included in the model regardless of their effect on AIC
+small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = amertrends_clean)
+#big has optional demographic variables
+big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+#stepwise selection based on AIC
+autoc_lm_v2 <- step(big_v1, scope = list(lower = small_v1, upper = big_v1), direction = "both")
+#final selected model (based on AIC) includes race, political leaning, and income as controls (age was removed)
+
+#model parameter estimates and significance testing
+summary(autoc_lm_v2)
+#collinearity still an issue for the smaller model between the interaction sm_pref_index:pol_lean and pol_lean
+car::vif(autoc_lm_v2)
+
+#ROC curve for v2
+#predicted probabilities
+predicted_probs_v2 <- predict(autoc_lm_v2, type = "response")
+#actual outcomes
+actual_outcomes_v2 <- autoc_lm_v2$y
+#ROC
+roc_v2 <- roc(actual_outcomes_v2, predicted_probs_v2)
+#plot the curve
+plot(roc_v2, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v2", 
+     col = "blue", xlab = "False Positive Rate (1 - Specificity)", 
+     ylab = "True Positive Rate (Sensitivity)")
+auc(roc_v2)
+#AUC gets slighter smaller but difference is negligible
+
+```
+
+```{r}
+#| label: checking-assumptions
+#| echo: false
+
+#moving forward with model v2, checking assumptions
+#1: large sample size - satisfied (n = 2065)
+
+#2: independence of outcomes/variables:
+
+#3: outliers
+
+#4: model fits the data
+```
+
+
+
+
+
+```{r}
+#| label: figure-drafts
+#these can be moved into the appropriate places in the paper later
+
 
 ```
 

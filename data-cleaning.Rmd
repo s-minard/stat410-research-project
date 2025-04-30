@@ -61,7 +61,8 @@ amertrends_subset <- amertrends_subset |>
 amertrends_subset <- amertrends_subset |> 
   mutate(autoc_support_cat = fct_collapse(polsys_autoc_w124,
                                     `Supports` = c("1", "2"),
-                                    `Does not support` = c("3", "4"))) 
+                                    `Does not support` = c("3", "4"))) |> 
+  drop_na(autoc_support_cat)
 
 #change column type to numeric
 #or logical if necessary
@@ -253,6 +254,10 @@ amertrends_subset <- amertrends_subset |>
 #freq table for sm_freq_cat
 frq(amertrends_subset$sm_freq_cat, out = "v")
 
+
+#drop NA values for all variables used in either model
+amertrends_subset <- amertrends_subset |> 
+  drop_na(autoc_support, sm_pref_index, sm_freq, econ_percep, age, race_1, pol_lean, income)
 ```
 
 ```{r model_v1}
@@ -279,9 +284,7 @@ auc(roc_v1)
 
 ```{r stepwise}
 
-#drop NA values for all variables used in either model
-amertrends_subset <- amertrends_subset |> 
-  drop_na(autoc_support, sm_pref_index, sm_freq, econ_percep, age, race_1, pol_lean, income)
+
 
 # Fit the lower and upper models using the cleaned data
 small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = clean_data)
