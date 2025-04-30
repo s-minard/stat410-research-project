@@ -27,6 +27,7 @@ library(ggplot2)
 library(forcats)
 library(sjmisc)
 library(ggridges)
+library(flextable)
 
 amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv")
 ```
@@ -44,13 +45,23 @@ By investigating these research questions, this paper will contribute to our und
 
 ## Methods
 
-The primary dependent variable in this study is Support for Autocratic Governance, as represented by the variable *POLSYS_AUTOC_W124*, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused.” This was re-coded into “Supports” (from “Very good” and “Somewhat good”) and “Does not support” (from “Somewhat bad” and “Very bad”).
+### Data Collection
 
-Independent variables include demographic characteristics such as age, race, gender, religion, and family income. In addition, we use *ECON_SIT_W124* (“How would you describe the current economic situation in the U.S.?” with response options “Very good,” “Somewhat good,” “Somewhat bad,” “Very bad,” and “Refused”) to measure perceived economic insecurity at the macro level. These were collapsed into “Good” and “Bad.” Finally, multiple variables were used to measure respondents’ news source and social media preferences, including *NEWSSOURCE_e_W124* (how often respondents get news, facts, and opinions about issues or events from social media sites) and *NEWSUSE_PLAT_a_W124* through *NEWSUSE_PLAT_e_W124* (whether respondents prefer getting certain information from news outlets, social media, both, or neither). The *NEWSUSE* variables were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each *NEWSUSE* variable were combined within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped.
+### Variable Creation
 
-Frequency tables were used to summarize the counts and proportions for control variables including age, income, race, and political party categories. They were also used to summarize the response and some explanatory variables, including economic perception, social media use frequency, and support for autocratic leadership. The social media preference index score distribution was illustrated with a stacked density plot with autocratic support. The planned modeling method is multiple logistic regression. We will develop the model to confirm our theory, therefore we will include the aforementioned variables relevant to our theory, and use stepwise selection to determine which additional demographic variables should be included. However, since both *NEWSSOURCE* and *NEWSUSE* measure social media behavior, they may be collinear. To address this, we will consider models that include each of them individually, in addition to a model with both. The model with the lowest AIC and highest number of significant predictors will be selected.
+The primary dependent variable in this study is support for autocratic leadership, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included a range from “Very good” to “Very bad,” and “Refused.” This was re-coded into “Supports” and “Does not support" to ensure a binary response variable. 
+
+Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (2: “Prefers social media”;  1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped.
+
+### Analytical Methods
+
+Frequency tables were used to summarize the counts and proportions for control variables including income, race, gender, and political party categories. They were also used to summarize the response and some explanatory variables. The social media preference index score distribution for each autocratic support category was illustrated with ridgelines and boxplots. Multiple logistic regression was used to predict support for autocratic leadership. We included the aforementioned theory-driven variables as well as income, race ("White" or "Non-White"), gender, and political leaning in the final model. Control variables were refined through stepwise selection, which removed only age. 
 
 ## Results
+
+### Exploratory Data Analysis
+
+Figure 1 shows that social media preference index score distributions are similar between those who do and do not support autocratic leadership. However, the supportive group's mean score (3.672) was marginally higher than the non-supportive group's (3.510). 
 
 ```{r}
 #| label: figure-1
@@ -67,15 +78,97 @@ amertrends_clean |>
   geom_boxplot(aes(fill = autoc_support_cat),
                width = 0.25,
                alpha = 0.75) +
-  theme_light() +
-  scale_fill_manual(values = c("brown1", "turquoise4")) +
+  theme_bw() +
+  scale_fill_manual(values = c("turquoise4", "orange2")) +
   labs(x = "Social Media Preference Index Score",
        y = "Attitude Toward \nAutocratic Leadership",
        title = "Figure 1. Distribution of Social Media Preference Index \nAcross Autocratic Leadership Support Categories") +
   guides(fill = FALSE) +
   xlim(0,10)
+
+#summary stats for each category 
+amertrends_clean |> 
+  group_by(autoc_support_cat) |> 
+  summarize(`mean sm_pref_index` = mean(sm_pref_index),
+            sd = sd(sm_pref_index))
 ```
 
+Figure 2 displays the proportions of respondents who support autocratic leadership within each economic perception category, faceted by political leaning. Across all political groups, a higher proportion of those who perceive the economy as "good" express support for autocracy. Frequency tables for income, political party, race, gender, and economic perception are included in the appendix.
+```{r}
+#| label: figure-2
+#| echo: false
+amertrends_clean |> 
+  ggplot() +
+  geom_bar(aes(x = econ_percep,
+               fill = autoc_support_cat),
+           position = "fill",
+           alpha = 0.8) +
+  facet_wrap(~pol_lean, ncol = 3) +
+  theme_bw() +
+  scale_fill_manual(values = c("turquoise4", "orange2")) +
+  labs(x = "Economic Perception",
+       y = "Proportion of Respondents",
+       fill = "Autocratic Leadership",
+       title = "Figure 2. Support for Autocratic Leadership by Economic \nPerception and Political Leaning")
+```
+
+### Statistical Analysis
+
+Table 1 below summarizes the multiple logistic regression model for autocratic leadership support. 
+Log odds model: $ln(p(x)/1-p(x))=-0.57324+0.04294x_{1}+0.02412x_{2}+0.44557x_{3}-0.02921x_{4}+0.22214x_{5}-0.58883x_{6}-0.06985x_{7}+0.42960x_{8}-0.69719x_{9}+-1.26958x_{10}+0.04836x_{7}x_{1}-0.08469x_{11}x_{1}$
+```{r}
+#| label: model-summary-table
+#| echo: false
+#| eval: false
+
+coef <- c(
+  "-0.57324", "0.04294", "0.02412", "0.44557", "-0.02921", "0.22214", "-0.58883", "-0.06985", "0.42960", "-0.69719", "-1.26958", "0.04836", "-0.08469") 
+
+std.error <- c(
+  "0.28981", "0.02629", "0.07023", "0.11115", "0.49880", "0.10576", "0.10755", "0.45001", "0.18116", "0.11051", "0.15848", "0.10190", "0.03826")
+
+z.value <- c(
+  "-1.978", "1.633", "0.343", "4.009", "-0.059", "2.100", "-5.475", "-0.155", "2.371", "-6.309", "-8.011", "0.475", "-1.691")
+
+p.value <- c(
+  "0.0479*", "0.1024", "0.7312", "<0.0001***", "0.9533", "0.0357*", "<0.00001***", "0.8766", "0.0177*", "<0.00001***", "<0.00001***", "0.6351", "0.0909")
+
+summary_v2 <- data.frame(
+  Estimate = coef,
+  `Std. Error` = std.error,
+  `z-value` = z.value,
+  `p-value` = p.value)
+
+rownames(summary_v2) <- c(
+  "Intercept", "Social Media Pref. Index", "Social Media Use Frequency",
+  "Economic Perception (Good)", "Other Gender", "Woman", "White",
+  "Other Party", "Republican, or Leans Republican", "Middle Income",
+  "Upper Income", "Social Media Pref. Index * Other Party",
+  "Social Media Pref. Index * Republican, or Leans Republican")
+
+# Add row names as a column
+summary_v2$Variable <- rownames(summary_v2)
+
+# Reorder to put 'Variable' first
+summary_v2 <- summary_v2[, c("Variable", setdiff(colnames(summary_v2), "Variable"))]
+
+# Make the flextable
+flextable(summary_v2) |> 
+  set_caption("Table 1. Output for Multiple Logistic Regression Model") |> 
+  set_header_labels(
+    Variable = "Variable",
+    Estimate = "Estimate",
+    `Std. Error` = "Std. Error",
+    `z-value` = "z-value",
+    `p-value` = "p-value") |> 
+  autofit()
+```
+
+
+## Conclusion
+
+
+## References
 
 ## Appendix
 
@@ -250,6 +343,13 @@ amertrends_subset <- amertrends_subset |>
 amertrends_subset <- amertrends_subset |> 
   drop_na(autoc_support, sm_pref_index, sm_freq, econ_percep, age, race_1, pol_lean, income)
 
+#recode gender
+amertrends_subset <- amertrends_subset |> 
+  mutate(gender = fct_recode(f_gender,
+                             "Man" = "1",
+                             "Woman" = "2",
+                             "Other" = "3"))
+
 
 write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 
@@ -260,13 +360,9 @@ write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 #| echo: false
 #| eval: false
 
-
-
 #creating the first model using all theory-driven variables AND all demographic/control variables
-autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
 summary(autoc_lm_v1)
-#check VIF- collinearity issues between sm_pref_index*pol_lean interaction and pol_lean
-car::vif(autoc_lm_v1)
 
 #ROC curve for v1
 #predicted probabilities
@@ -291,17 +387,15 @@ auc(roc_v1)
 #stepwise selection to determine best demographic variables for the model
 #fit the lower and upper models
 #lower includes the theory-driven variables that must be included in the model regardless of their effect on AIC
-small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = amertrends_clean)
+small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = amertrends_clean)
 #big has optional demographic variables
-big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
 #stepwise selection based on AIC
 autoc_lm_v2 <- step(big_v1, scope = list(lower = small_v1, upper = big_v1), direction = "both")
 #final selected model (based on AIC) includes race, political leaning, and income as controls (age was removed)
 
 #model parameter estimates and significance testing
 summary(autoc_lm_v2)
-#collinearity still an issue for the smaller model between the interaction sm_pref_index:pol_lean and pol_lean
-car::vif(autoc_lm_v2)
 
 #ROC curve for v2
 #predicted probabilities
@@ -315,22 +409,21 @@ plot(roc_v2, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v2",
      col = "blue", xlab = "False Positive Rate (1 - Specificity)", 
      ylab = "True Positive Rate (Sensitivity)")
 auc(roc_v2)
-#AUC gets slighter smaller but difference is negligible
+#AUC gets slighter smaller but the difference is negligible
+#decided to proceed with model v2 (sans age) because it isn't a significant predictor anyway and does not add much value to the model
+
+#assumptions: check for collinearity
+#some collinearity between the interaction sm_pref_index*pol_lean and pol_lean, but the rest are fine
+car::vif(autoc_lm_v2)
+
 
 ```
 
 ```{r}
-#| label: checking-assumptions
+#| label: 
 #| echo: false
 
-#moving forward with model v2, checking assumptions
-#1: large sample size - satisfied (n = 2065)
 
-#2: independence of outcomes/variables:
-
-#3: outliers
-
-#4: model fits the data
 ```
 
 
