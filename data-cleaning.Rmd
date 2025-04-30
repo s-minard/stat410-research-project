@@ -221,7 +221,7 @@ amertrends_subset |>
 #density
 ggplot(amertrends_subset) +
   geom_density(aes(x = sm_pref_index,
-                   fill = autoc_support_cat), 
+                   fill = pol_lean), 
                position = "stack", 
                alpha = 0.75) +
   theme_bw() +
@@ -229,7 +229,8 @@ ggplot(amertrends_subset) +
        y = "Density",
        fill = "Support for Autocratic Leadership",
        title = "Distribution of Social Media Prefence Index Scores") +
-  scale_fill_manual(values = c("turquoise3", "blue4")) 
+  scale_fill_manual(values = c("turquoise3", "blue4", "red4")) +
+  facet_wrap(~autoc_support_cat)
 
 #summary stats for sm_pref_index
 summary(amertrends_subset$sm_pref_index)
