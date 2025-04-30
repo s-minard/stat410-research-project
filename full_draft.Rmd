@@ -352,35 +352,35 @@ Table 1. Frequency table for age categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$age, out = "v")
+frq(amertrends_subset$age, out = "txt")
 ```
 
 Table 2. Frequency table for income categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$income, out = "v")
+frq(amertrends_subset$income, out = "txt")
 ```
 
 Table 3. Frequency table for race categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$race_1, out = "v")
+frq(amertrends_subset$race_1, out = "txt")
 ```
 
 Table 4. Frequency table for economic perception categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$econ_percep, out = "v")
+frq(amertrends_subset$econ_percep, out = "txt")
 ```
 
 Table 5. Frequency table for political leaning categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$pol_lean, out = "v")
+frq(amertrends_subset$pol_lean, out = "txt")
 ```
 
 ## References
