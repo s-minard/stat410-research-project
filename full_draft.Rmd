@@ -1,9 +1,9 @@
 ---
 title: ''
 output:
-  html_document:
-    df_print: paged
   word_document:
+    df_print: paged
+  html_document:
     df_print: paged
 ---
 
@@ -66,7 +66,8 @@ Figure 1 shows that social media preference index score distributions are simila
 ```{r}
 #| label: figure-1
 #| echo: false 
-#| eval: false
+#| fig-width: 6
+#| fig-height: 4
 
 #boxplot + ridgelines for sm_pref_index by autoc_support categories
 amertrends_clean |> 
@@ -81,9 +82,9 @@ amertrends_clean |>
   theme_bw() +
   scale_fill_manual(values = c("turquoise4", "orange2")) +
   labs(x = "Social Media Preference Index Score",
-       y = "Attitude Toward \nAutocratic Leadership",
+       y = "Autocratic Leadership Support",
        title = "Figure 1. Distribution of Social Media Preference Index \nAcross Autocratic Leadership Support Categories") +
-  guides(fill = FALSE) +
+  guides(fill = "none") +
   xlim(0,10)
 
 #summary stats for each category 
@@ -97,6 +98,8 @@ Figure 2 displays the proportions of respondents who support autocratic leadersh
 ```{r}
 #| label: figure-2
 #| echo: false
+#| fig-width: 6
+#| fig-height: 4
 amertrends_clean |> 
   ggplot() +
   geom_bar(aes(x = econ_percep,
@@ -105,65 +108,19 @@ amertrends_clean |>
            alpha = 0.8) +
   facet_wrap(~pol_lean, ncol = 3) +
   theme_bw() +
+  theme(legend.position = "bottom") +
   scale_fill_manual(values = c("turquoise4", "orange2")) +
   labs(x = "Economic Perception",
        y = "Proportion of Respondents",
        fill = "Autocratic Leadership",
-       title = "Figure 2. Support for Autocratic Leadership by Economic \nPerception and Political Leaning")
+       title = "Figure 2. Support for Autocratic Leadership \nby Economic Perception and Political Leaning")
 ```
 
 ### Statistical Analysis
 
 Table 1 below summarizes the multiple logistic regression model for autocratic leadership support. 
 Log odds model: $ln(p(x)/1-p(x))=-0.57324+0.04294x_{1}+0.02412x_{2}+0.44557x_{3}-0.02921x_{4}+0.22214x_{5}-0.58883x_{6}-0.06985x_{7}+0.42960x_{8}-0.69719x_{9}+-1.26958x_{10}+0.04836x_{7}x_{1}-0.08469x_{11}x_{1}$
-```{r}
-#| label: model-summary-table
-#| echo: false
-#| eval: false
-
-coef <- c(
-  "-0.57324", "0.04294", "0.02412", "0.44557", "-0.02921", "0.22214", "-0.58883", "-0.06985", "0.42960", "-0.69719", "-1.26958", "0.04836", "-0.08469") 
-
-std.error <- c(
-  "0.28981", "0.02629", "0.07023", "0.11115", "0.49880", "0.10576", "0.10755", "0.45001", "0.18116", "0.11051", "0.15848", "0.10190", "0.03826")
-
-z.value <- c(
-  "-1.978", "1.633", "0.343", "4.009", "-0.059", "2.100", "-5.475", "-0.155", "2.371", "-6.309", "-8.011", "0.475", "-1.691")
-
-p.value <- c(
-  "0.0479*", "0.1024", "0.7312", "<0.0001***", "0.9533", "0.0357*", "<0.00001***", "0.8766", "0.0177*", "<0.00001***", "<0.00001***", "0.6351", "0.0909")
-
-summary_v2 <- data.frame(
-  Estimate = coef,
-  `Std. Error` = std.error,
-  `z-value` = z.value,
-  `p-value` = p.value)
-
-rownames(summary_v2) <- c(
-  "Intercept", "Social Media Pref. Index", "Social Media Use Frequency",
-  "Economic Perception (Good)", "Other Gender", "Woman", "White",
-  "Other Party", "Republican, or Leans Republican", "Middle Income",
-  "Upper Income", "Social Media Pref. Index * Other Party",
-  "Social Media Pref. Index * Republican, or Leans Republican")
-
-# Add row names as a column
-summary_v2$Variable <- rownames(summary_v2)
-
-# Reorder to put 'Variable' first
-summary_v2 <- summary_v2[, c("Variable", setdiff(colnames(summary_v2), "Variable"))]
-
-# Make the flextable
-flextable(summary_v2) |> 
-  set_caption("Table 1. Output for Multiple Logistic Regression Model") |> 
-  set_header_labels(
-    Variable = "Variable",
-    Estimate = "Estimate",
-    `Std. Error` = "Std. Error",
-    `z-value` = "z-value",
-    `p-value` = "p-value") |> 
-  autofit()
-```
-
+![Table1](Table_1.png)
 
 ## Conclusion
 
@@ -174,7 +131,6 @@ flextable(summary_v2) |>
 
 ```{r}
 #| label: load-and-clean-data
-#| echo: FALSE
 
 #read the data file
 amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
@@ -198,9 +154,10 @@ amertrends_subset <- amertrends_subset |>
   mutate(across(where(is.numeric), as.factor))
 ```
 
+In the code chunk below, we create two versions of the binary response variable (autoc_support): one with values 0 and 1 for the model, and one with descriptive labels for visualizations.
 ```{r}
 #| label: clean-response
-#| echo: false 
+
 #make the response autoc variable binary/logical so it will work in the logistic model
 #change column type to numeric
 amertrends_subset <- amertrends_subset |> 
@@ -217,9 +174,9 @@ amertrends_subset <- amertrends_subset |>
   drop_na(autoc_support_cat)
 ```
 
+In the code chunk below, we recode the explanatory variables and create a new, clean data csv. 
 ```{r}
 #| label: clean-explanatory
-#| echo: false 
 
 #defining the levels of key explanatory variables
 
@@ -231,8 +188,6 @@ amertrends_subset <- amertrends_subset|>
                           "somewhat good" = "2",
                           "somewhat bad" = "3",
                           "very bad" = "4")) 
-#frequency table for econ_sit
-frq(amertrends_subset$econ_sit_w124, out = "v")
 
 #since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
 amertrends_subset <- amertrends_subset |> 
@@ -355,9 +310,10 @@ write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 
 ```
 
+
+In the code chunk below, we create the first model with all demographic and theory-driven variables under consideration. We then check the ROC curve.
 ```{r}
 #| label: model-v1
-#| echo: false
 #| eval: false
 
 #creating the first model using all theory-driven variables AND all demographic/control variables
@@ -379,11 +335,10 @@ auc(roc_v1)
 #not a great model, so we will try adjusting which demographic variables are included to see if that improves things
 ```
 
+In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age.  We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. There appears to be collinearity between the interaction term sm_pref_index*pol_lean and pol_lean. 
 ```{r}
 #| label: model-v2
-#| echo: false
 #| eval: false
-
 #stepwise selection to determine best demographic variables for the model
 #fit the lower and upper models
 #lower includes the theory-driven variables that must be included in the model regardless of their effect on AIC
@@ -416,64 +371,89 @@ auc(roc_v2)
 #some collinearity between the interaction sm_pref_index*pol_lean and pol_lean, but the rest are fine
 car::vif(autoc_lm_v2)
 
-
 ```
 
+In the code chunk below, we create the summary table for the final mode. It doesn't appear in the rendered word document unfortunately, so we include a screenshot in the text instead.
 ```{r}
-#| label: 
+#| label: model-summary-table
 #| echo: false
+#| eval: false
 
+coef <- c(
+  "-0.57324", "0.04294", "0.02412", "0.44557", "-0.02921", "0.22214", "-0.58883", "-0.06985", "0.42960", "-0.69719", "-1.26958", "0.04836", "-0.08469") 
 
+std.error <- c(
+  "0.28981", "0.02629", "0.07023", "0.11115", "0.49880", "0.10576", "0.10755", "0.45001", "0.18116", "0.11051", "0.15848", "0.10190", "0.03826")
+
+z.value <- c(
+  "-1.978", "1.633", "0.343", "4.009", "-0.059", "2.100", "-5.475", "-0.155", "2.371", "-6.309", "-8.011", "0.475", "-1.691")
+
+p.value <- c(
+  "0.0479*", "0.1024", "0.7312", "<0.0001***", "0.9533", "0.0357*", "<0.00001***", "0.8766", "0.0177*", "<0.00001***", "<0.00001***", "0.6351", "0.0909")
+
+summary_v2 <- data.frame(
+  Estimate = coef,
+  `Std. Error` = std.error,
+  `z-value` = z.value,
+  `p-value` = p.value)
+
+rownames(summary_v2) <- c(
+  "Intercept", "Social Media Pref. Index", "Social Media Use Frequency",
+  "Economic Perception (Good)", "Other Gender", "Woman", "White",
+  "Other Party", "Republican, or Leans Republican", "Middle Income",
+  "Upper Income", "Social Media Pref. Index * Other Party",
+  "Social Media Pref. Index * Republican, or Leans Republican")
+
+# Add row names as a column
+summary_v2$Variable <- rownames(summary_v2)
+
+# Reorder to put 'Variable' first
+summary_v2 <- summary_v2[, c("Variable", setdiff(colnames(summary_v2), "Variable"))]
+
+# Make the flextable
+flextable(summary_v2) |> 
+  set_caption("Table 1. Output for Multiple Logistic Regression Model") |> 
+  set_header_labels(
+    Variable = "Variable",
+    Estimate = "Estimate",
+    `Std. Error` = "Std. Error",
+    `z-value` = "z-value",
+    `p-value` = "p-value") |> 
+  autofit()
 ```
 
-
-
-
-
+Table 2. Frequency table for gender categories.
 ```{r}
-#| label: figure-drafts
-#these can be moved into the appropriate places in the paper later
-
-
+#| echo: FALSE
+frq(amertrends_clean$gender, out = "txt")
 ```
 
-
-
-
-
-Table 1. Frequency table for age categories.
+Table 3. Frequency table for income categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$age, out = "txt")
+frq(amertrends_clean$income, out = "txt")
 ```
 
-Table 2. Frequency table for income categories.
+Table 4. Frequency table for race categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$income, out = "txt")
+frq(amertrends_clean$race_1, out = "txt")
 ```
 
-Table 3. Frequency table for race categories.
+Table 5. Frequency table for economic perception categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$race_1, out = "txt")
+frq(amertrends_clean$econ_percep, out = "txt")
 ```
 
-Table 4. Frequency table for economic perception categories.
+Table 6. Frequency table for political leaning categories.
 
 ```{r}
 #| echo: FALSE
-frq(amertrends_subset$econ_percep, out = "txt")
-```
-
-Table 5. Frequency table for political leaning categories.
-
-```{r}
-#| echo: FALSE
-frq(amertrends_subset$pol_lean, out = "txt")
+frq(amertrends_clean$pol_lean, out = "txt")
 ```
 
 ## References
