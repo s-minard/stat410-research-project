@@ -46,12 +46,13 @@ By investigating these research questions, this paper will contribute to our und
 ## Methods
 
 ### Data Collection
+This study conducts secondary analysis of the American Trends Panel Wave 124 data set from Pew Research Center, also known as ATP Wave 124. The survey was administered to a nationally representative, stratified random sample of U.S. adults from March 20 to March 26, 2023. Of the 4,058 panelists sampled, 3,576 responded, resulting in a response rate of 88%. Hispanic men, non-Hispanic Black men, and non-Hispanic Asian were oversampled then weighted to provide more precise estimates. 
 
 ### Variable Creation
 
 The primary dependent variable in this study is support for autocratic leadership, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included a range from “Very good” to “Very bad,” and “Refused.” This was re-coded into “Supports” and “Does not support" to ensure a binary response variable. 
 
-Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (2: “Prefers social media”;  1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped.
+Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (2: “Prefers social media”;  1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped. The final sample size included in the model was 2065 observations.
 
 ### Analytical Methods
 
@@ -118,12 +119,15 @@ amertrends_clean |>
 
 ### Statistical Analysis
 
-Table 1 below summarizes the multiple logistic regression model for autocratic leadership support. 
+Table 1 below summarizes the multiple logistic regression model output for autocratic leadership support. The estimates and p-values will be interpreted in the following section. 
 Log odds model: $ln(p(x)/1-p(x))=-0.57324+0.04294x_{1}+0.02412x_{2}+0.44557x_{3}-0.02921x_{4}+0.22214x_{5}-0.58883x_{6}-0.06985x_{7}+0.42960x_{8}-0.69719x_{9}+-1.26958x_{10}+0.04836x_{7}x_{1}-0.08469x_{11}x_{1}$
 ![Table1](Table_1.png)
 
 ## Conclusion
 
+The purpose of this study is to determine whether individuals' social media reliance and perception of the economy as generally good or bad might predict support for autocratic leadership in the United States. In addition, an interaction between social media reliance and political ideology is also considered. There is very strong evidence that at least one variable in the model with social media preference index score, social media use frequency, economic perception, gender, race, political leaning, income, and the social media preference-political leaning interaction has predictive power of autocratic support (G = 141.3424, p-value < 0.001). However, the model overall is a poor fit, as evidenced by the AUC value (AUC = 0.6589). 
+
+Several predictors were statistically significant, including the intercept (z = -1.978, p-value = 0.0479), perceiving the econoomy as good (z = 4.009, p-value < 0.0001), being a woman (z = 2.100, p-value = 0.0357), being white (z = -5.475, p-value < 0.00001), being or leaning Republican (z = 2.371, p-value = 0.0177), being middle income (z = -6.309, p-value < 0.00001), and being upper income (z = -8.011, p-value < 0.00001). Social media preference index score, social media use frequency, being non-binary, being neither Republican nor Democrat, and the interaction between social media preference index score and political leaning were not statistically significant.
 
 ## References
 
@@ -371,6 +375,11 @@ auc(roc_v2)
 #some collinearity between the interaction sm_pref_index*pol_lean and pol_lean, but the rest are fine
 car::vif(autoc_lm_v2)
 
+#check significance overall
+G <- autoc_lm_v2$null.deviance - autoc_lm_v2$deviance
+G
+df <- autoc_lm_v2$df.null - autoc_lm_v2$df.residual
+1 - pchisq(G, df)
 ```
 
 In the code chunk below, we create the summary table for the final mode. It doesn't appear in the rendered word document unfortunately, so we include a screenshot in the text instead.
