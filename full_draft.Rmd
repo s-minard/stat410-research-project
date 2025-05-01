@@ -5,10 +5,10 @@ output:
     df_print: paged
     reference_docx: docx-template.docx
 ---
+
 ##### Sam Minard^1^ & Efrain Ramirez^2^
 
-^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA*
-^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
+^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA* ^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
 
 ```{r}
 #| label: setup
@@ -25,7 +25,7 @@ library(flextable)
 amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv")
 ```
 
-::: {style="text-align: left;"}
+
 # Abstract
 
 This study employs multiple logistic regression to analyze data from Pew Research Center’s American Trends Panel, exploring how perceived macroeconomic conditions and social media news use preferences relate to support for autocratic leadership in the United States. While prior research suggests that economic anxiety and social media reliance fuel autocratic sentiment, results indicate that perceiving the economy as "good" is associated with higher odds of autocratic support, contrary to expectations. Social media preference, frequency of use, and its interaction with political ideology were not statistically significant. However, several demographic factors, including income, race, gender, and party affiliation, emerged as significant predictors, though not always in the expected direction.
@@ -52,7 +52,7 @@ The primary dependent variable in this study is support for autocratic leadershi
 
 Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped. The final sample size included in the model was 2065 observations.
 
-## Analytical Methods
+## Analytic Methods
 
 Frequency tables were used to summarize the counts and proportions for control variables including income, race, gender, and political party categories. They were also used to summarize the response and some explanatory variables. The social media preference index score distribution for each autocratic support category was illustrated with ridgelines and boxplots. Multiple logistic regression was used to predict support for autocratic leadership. We included the aforementioned theory-driven variables as well as income, race ("White" or "Non-White"), gender, and political leaning in the final model. Control variables were refined through stepwise selection, which removed only age.
 
@@ -62,59 +62,11 @@ Frequency tables were used to summarize the counts and proportions for control v
 
 Figure 1 shows that social media preference index score distributions are similar between those who do and do not support autocratic leadership. However, the supportive group's mean score (3.672) was marginally higher than the non-supportive group's (3.510).
 
-```{r}
-#| label: figure-1
-#| echo: false 
-#| fig-width: 6
-#| fig-height: 4
-
-#boxplot + ridgelines for sm_pref_index by autoc_support categories
-amertrends_clean |> 
-  ggplot(aes(x = sm_pref_index, 
-             y = autoc_support_cat, 
-             fill = autoc_support_cat)) +
-   geom_density_ridges(scale = 0.55, 
-                       alpha = 0.5) +
-  geom_boxplot(aes(fill = autoc_support_cat),
-               width = 0.25,
-               alpha = 0.75) +
-  theme_bw() +
-  scale_fill_manual(values = c("turquoise4", "orange2")) +
-  labs(x = "Social Media Preference Index Score",
-       y = "Autocratic Leadership Support",
-       title = "Figure 1. Distribution of Social Media Preference Index \nAcross Autocratic Leadership Support Categories") +
-  guides(fill = "none") +
-  xlim(0,10)
-
-#summary stats for each category 
-amertrends_clean |> 
-  group_by(autoc_support_cat) |> 
-  summarize(`mean sm_pref_index` = mean(sm_pref_index),
-            sd = sd(sm_pref_index))
-```
+###### ![](Figure_1.png) 
 
 Figure 2 displays the proportions of respondents who support autocratic leadership within each economic perception category, faceted by political leaning. Across all political groups, a higher proportion of those who perceive the economy as "good" express support for autocracy. Frequency tables for income, political party, race, gender, and economic perception are included in the appendix.
 
-```{r}
-#| label: figure-2
-#| echo: false
-#| fig-width: 6
-#| fig-height: 4
-amertrends_clean |> 
-  ggplot() +
-  geom_bar(aes(x = econ_percep,
-               fill = autoc_support_cat),
-           position = "fill",
-           alpha = 0.8) +
-  facet_wrap(~pol_lean, ncol = 3) +
-  theme_bw() +
-  theme(legend.position = "bottom") +
-  scale_fill_manual(values = c("turquoise4", "orange2")) +
-  labs(x = "Economic Perception",
-       y = "Proportion of Respondents",
-       fill = "Autocratic Leadership",
-       title = "Figure 2. Support for Autocratic Leadership \nby Economic Perception and Political Leaning")
-```
+###### ![](Figure_2.png)
 
 ## Statistical Analysis
 
@@ -155,9 +107,11 @@ Mourão, R. R., Thorson, E., Chen, W., & Tham, S. M. (2018). Media repertoires a
 Pew Research Center. (2023). American Trends Panel Wave 124 [Data file and codebook]. Retrieved from <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/.> 
 
 Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
-:::
+
 
 # Appendix
+
+#### Loading and cleaning the data
 
 ```{r}
 #| label: load-and-clean-data
@@ -184,6 +138,8 @@ amertrends_subset <- amertrends_subset |>
   mutate(across(where(is.numeric), as.factor))
 ```
 
+#### Cleaning response variable
+
 In the code chunk below, we create two versions of the binary response variable (autoc_support): one with values 0 and 1 for the model, and one with descriptive labels for visualizations.
 
 ```{r}
@@ -204,6 +160,8 @@ amertrends_subset <- amertrends_subset |>
                                     `Does not support` = c("3", "4")))  |> 
   drop_na(autoc_support_cat)
 ```
+
+#### Cleaning explanatory variables
 
 In the code chunk below, we recode the explanatory variables and create a new, clean data csv.
 
@@ -342,6 +300,73 @@ write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 
 ```
 
+#### Figures
+
+In the code chunk below, we create Figures 1 and 2.
+
+```{r}
+#| label: figures
+
+#boxplot + ridgelines for sm_pref_index by autoc_support categories
+amertrends_clean |> 
+  ggplot(aes(x = sm_pref_index, 
+             y = autoc_support_cat, 
+             fill = autoc_support_cat)) +
+   geom_density_ridges(scale = 0.55, 
+                       alpha = 0.5) +
+  geom_boxplot(aes(fill = autoc_support_cat),
+               width = 0.25,
+               alpha = 0.9) +
+  theme_bw() +
+  scale_fill_manual(values = c("skyblue3", "tan4")) +
+  labs(x = "Social Media Preference Index Score",
+       y = "",
+       title = "Figure 1. Distribution of Social Media Preference Index \nAcross Autocratic Leadership Support Categories") +
+  guides(fill = "none") +
+  xlim(0,10) +
+  theme(legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        axis.text.x = element_text(size = 6),
+        axis.title.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 8))
+
+#ggsave("Figure_1.png", width = 4, height = 2.75)
+
+#summary stats for each category 
+amertrends_clean |> 
+  group_by(autoc_support_cat) |> 
+  summarize(`mean sm_pref_index` = mean(sm_pref_index),
+            sd = sd(sm_pref_index))
+
+amertrends_clean |> 
+  ggplot() +
+  geom_bar(aes(x = econ_percep,
+               fill = autoc_support_cat),
+           position = "fill",
+           alpha = 0.9) +
+  facet_wrap(~pol_lean, ncol = 3) +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        axis.text.x = element_text(size = 6),
+        axis.title.x = element_text(size = 6),
+        axis.title.y = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 8),
+        strip.text = element_text(size = 5)) +
+  scale_fill_manual(values = c("skyblue3", "tan4")) +
+  labs(x = "Economic Perception",
+       y = "Proportion of Respondents",
+       fill = "Autocratic Leadership",
+       title = "Figure 2. Support for Autocratic Leadership by Economic Perception \nand Political Leaning")
+
+ggsave("Figure_2.png", width = 4, height = 2.75)
+```
+
+#### Building version 1 of the model
+
 In the code chunk below, we create the first model with all demographic and theory-driven variables under consideration. We then check the ROC curve.
 
 ```{r}
@@ -367,7 +392,10 @@ auc(roc_v1)
 #not a great model, so we will try adjusting which demographic variables are included to see if that improves things
 ```
 
-In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age. We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. There appears to be collinearity between the interaction term sm_pref_index\*pol_lean and pol_lean.
+
+#### Building version 2 of the model
+
+In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age. We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. There appears to be collinearity between the interaction term sm_pref_index*pol_lean and pol_lean.
 
 ```{r}
 #| label: model-v2
@@ -410,6 +438,8 @@ G
 df <- autoc_lm_v2$df.null - autoc_lm_v2$df.residual
 1 - pchisq(G, df)
 ```
+
+#### Creating model version 2 summary table
 
 In the code chunk below, we create the summary table for the final mode. It doesn't appear in the rendered word document unfortunately, so we include a screenshot in the text instead.
 
@@ -460,6 +490,8 @@ flextable(summary_v2) |>
     `p-value` = "p-value") |> 
   autofit()
 ```
+
+#### Frequency tables
 
 Table 2. Frequency table for gender categories.
 
