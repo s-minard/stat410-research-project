@@ -1,5 +1,5 @@
 ---
-title: 'Factors Affecting Support for Autocratic Governance Among U.S. Adults'
+title: 'TEST DRAFT: Factors Affecting Support for Autocratic Governance Among U.S. Adults'
 output:
   word_document:
     df_print: paged
@@ -351,7 +351,7 @@ amertrends_subset <- amertrends_subset |>
 
 #### Cleaning Explanatory Variables
 
-In the code chunk below, we recode the explanatory variables and create a new CSV file containing the clean data. Gender is collapsed into Men and Women/Other, because we want the model to show differences between men vs everyone else all together, not specific differences between men vs non-binary people, men vs women, and women vs non-binary people. The only relevant comparison we need is men vs everyone else. 
+In the code chunk below, we recode the explanatory variables and create a new CSV file containing the clean data. 
 
 ```{r}
 #| label: clean-explanatory
@@ -370,8 +370,8 @@ amertrends_subset <- amertrends_subset|>
 #since there are considerably fewer observations at the extremes, collapse econ_sit_w124 into 2 categories: good and bad
 amertrends_subset <- amertrends_subset |> 
   mutate(econ_percep = fct_collapse(econ_sit_w124,
-                                      Good = c("very good", "somewhat good"),
-                                      Bad = c("very bad", "somewhat bad")))
+                                      good = c("very good", "somewhat good"),
+                                      bad = c("very bad", "somewhat bad")))
 
 #step 2: creating social media reliance index variable
 
@@ -478,55 +478,20 @@ amertrends_subset <- amertrends_subset |>
 
 #recode gender, leaving all three original categories (use this version for frequency tables) 
 amertrends_subset <- amertrends_subset |> 
-  mutate(gender = fct_recode(f_gender,
-                             "Man" = "1",
-                             "Woman" = "2",
-                             "Other" = "3"))
+  mutate(gender = fct_collapse(f_gender,
+                               "Man" = "1",
+                               "Woman" = "2",
+                               "Other" = "3"))
 
 #create gender2 by combining female/other since men are most relevant to our theory
+#set female/other to reference level 
+#we want the model to show differences between men vs everyone else, not differences between men vs non-binary people, men vs women, and women vs non-binary people (the only relevant comparison we need is men vs everyone else)
 amertrends_subset <- amertrends_subset |> 
   mutate(gender2 = fct_collapse(f_gender,
-                                "Woman/Other" = c("2", "3"),
-                                "Man" = "1")) 
+                               "Woman/Other" = c("2", "3"),
+                               "Man" = "1"))
 
-#write the new CSV and read it in
 write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
-amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv", 
-                             col_types = cols(
-                               sm_pref_index = col_double(),
-                               .default = col_factor()))
-
-#now all the releveling is messed up, so we need to do it again to ensure the correct reference levels are in the model
-
-#set female/other to reference level for gender2
-amertrends_clean <- amertrends_clean |> 
-  mutate(gender2 = fct_relevel(gender2, "Woman/Other"))
-#check that the levels are right
-levels(amertrends_clean$gender2)
-
-#set good to reference level for econ_percep
-amertrends_clean <- amertrends_clean |> 
-  mutate(econ_percep = fct_relevel(econ_percep, "Good"))
-#check that the levels are right
-levels(amertrends_clean$econ_percep)
-
-#set democrat to ref level for pol_lean
-amertrends_clean <- amertrends_clean |> 
-  mutate(pol_lean = fct_relevel(pol_lean, "Democrat, or leans Democrat"))
-#check that the levels are right
-levels(amertrends_clean$pol_lean)
-
-#set low income to ref level for income
-amertrends_clean <- amertrends_clean |> 
-  mutate(income = fct_relevel(income, "Lower income"))
-#check that the levels are right
-levels(amertrends_clean$income)
-
-#set non-white to reference level for race
-amertrends_clean <- amertrends_clean |> 
-  mutate(race_1 = fct_relevel(race_1, "Non-White"))
-#check that the levels are right
-levels(amertrends_clean$race_1)
 
 ```
 
@@ -604,7 +569,7 @@ In the code chunk below, we create the first model with all demographic and theo
 #| eval: false
 
 #creating the first model using all theory-driven variables AND all demographic/control variables
-autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender2) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
 summary(autoc_lm_v1)
 
 #ROC curve for v1
@@ -634,7 +599,7 @@ In the code chunk below, we use stepwise selection to find the "best" model. Bec
 #lower includes the theory-driven variables that must be included in the model regardless of their effect on AIC
 small_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(pol_lean) + factor(pol_lean)*sm_pref_index , family = binomial(link = "logit"), data = amertrends_clean)
 #big has optional demographic variables
-big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender2) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
+big_v1<- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender) + factor(race_1) + factor(pol_lean) + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
 #stepwise selection based on AIC
 autoc_lm_v2 <- step(big_v1, scope = list(lower = small_v1, upper = big_v1), direction = "both")
 #final selected model (based on AIC) includes race, political leaning, and income as controls (age was removed)
