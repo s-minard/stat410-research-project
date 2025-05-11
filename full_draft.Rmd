@@ -8,7 +8,7 @@ output:
 
 ##### Sam Minard^1^ & Efrain Ramirez^2^
 
-^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA* 
+^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA*  
 ^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
 
 ```{r}
@@ -23,6 +23,7 @@ library(sjmisc)
 library(ggridges)
 library(flextable)
 library(boot)
+library(pROC)
 
 amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv")
 ```
@@ -306,7 +307,8 @@ In the code chunk below, we read in the data and create a subset containing only
 
 ```{r}
 #| label: load-and-clean-data
-
+#| echo: true
+#| results: 'markup'
 #read the data file
 amertrends <- read_sav("data/data-raw/W124_Mar23/ATP W124.sav")
 
@@ -335,7 +337,7 @@ In the code chunk below, we create two versions of the binary response variable 
 
 ```{r}
 #| label: clean-response
-
+#| results: 'markup'
 #make the response autoc variable binary/logical so it will work in the logistic model
 #change column type to numeric
 amertrends_subset <- amertrends_subset |> 
@@ -358,6 +360,8 @@ In the code chunk below, we recode the explanatory variables and create a new CS
 
 ```{r}
 #| label: clean-explanatory
+#| echo: true
+#| results: 'markup'
 
 #defining the levels of key explanatory variables
 
@@ -541,6 +545,8 @@ In the code chunk below, we create Figures 1 and 2.
 
 ```{r}
 #| label: figures
+#| echo: true
+#| results: 'markup'
 
 #boxplot + ridgelines for sm_pref_index by autoc_support categories
 amertrends_clean |> 
@@ -606,7 +612,8 @@ In the code chunk below, we create the first model with all demographic and theo
 
 ```{r}
 #| label: model-v1
-#| eval: false
+#| echo: true
+#| resulsts: 'markup'
 
 #creating the first model using all theory-driven variables AND all demographic/control variables
 autoc_lm_v1 <- glm(autoc_support ~ sm_pref_index + sm_freq + factor(econ_percep) + factor(age) + factor(gender2) + factor(race_1) + factor(pol_lean)  + factor(pol_lean)*sm_pref_index + factor(income), family = binomial(link = "logit"), data = amertrends_clean)
@@ -622,6 +629,7 @@ roc_v1 <- roc(actual_outcomes_v1, predicted_probs_v1)
 plot(roc_v1, legacy.axes = TRUE, main = "ROC Curve for autoc_lm_v1", 
      col = "blue", xlab = "False Positive Rate (1 - Specificity)", 
      ylab = "True Positive Rate (Sensitivity)")
+
 auc(roc_v1)
 
 #not a great model, so we will try adjusting which demographic variables are included to see if that improves things
@@ -635,7 +643,9 @@ When checking assumptions, there appears to be collinearity between the interact
 
 ```{r}
 #| label: model-v2
-#| eval: false
+#| echo: true
+#| results: 'markup' 
+
 #stepwise selection to determine best demographic variables for the model
 #fit the lower and upper models
 #lower includes the theory-driven variables that must be included in the model regardless of their effect on AIC
@@ -681,7 +691,9 @@ The cross-validation prediction error or average test MSE when using 10-fold cro
 
 ```{r}
 #| label: cross-validation
-#| eval: false 
+#| echo: true
+#| results: 'asis'
+#| warning: false
 # 10-fold cross validation
 
 #set seed for reproducibility
@@ -711,6 +723,8 @@ In the code chunk below, we create the summary table for the final mode.
 
 ```{r}
 #| label: model-summary-table
+#| echo: true
+#| results: 'markup'
 
 #define the coefficients in a vector
 coef <- c(0.08683, 0.04188, 0.02526, -0.44460, -0.21556, -0.58948, 0.42943, -0.07835, -0.69938, -1.26926, -0.06374, 0.05098)
@@ -757,6 +771,8 @@ model_summary_table
 ####### 2. Age
 ```{r}
 #| label: freq-age-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 age_freq <- as.data.frame(table(amertrends_clean$age))
@@ -771,11 +787,15 @@ age_freq$Percent <- (age_freq$Frequency / sum(age_freq$Frequency)) * 100
 freq_age <- flextable(age_freq) |>
   set_caption("Table 2. Frequency Table for Age Categories") |>
   autofit()
+
+freq_age
 ```
 
 ####### 3. Gender
 ```{r}
 #| label: freq-gender-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 gender_freq <- as.data.frame(table(amertrends_clean$gender))
@@ -790,11 +810,15 @@ gender_freq$Percent <- (gender_freq$Frequency / sum(gender_freq$Frequency)) * 10
 freq_gender <- flextable(gender_freq) |>
   set_caption("Table 3. Frequency Table for Gender Categories") |>
   autofit()
+
+freq_gender
 ```
 
 ####### 4. Income
 ```{r}
 #| label: freq-income-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 income_freq <- as.data.frame(table(amertrends_clean$income))
@@ -809,11 +833,15 @@ income_freq$Percent <- (income_freq$Frequency / sum(income_freq$Frequency)) * 10
 freq_income <- flextable(income_freq) |>
   set_caption("Table 4. Frequency Table for Income Categories") |>
   autofit()
+
+freq_income
 ```
 
 ####### 5. Race
 ```{r}
 #| label: freq-race-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 race_freq <- as.data.frame(table(amertrends_clean$race_1))
@@ -828,11 +856,15 @@ race_freq$Percent <- (race_freq$Frequency / sum(race_freq$Frequency)) * 100
 freq_race <- flextable(race_freq) |>
   set_caption("Table 5. Frequency Table for Race Categories") |>
   autofit()
+
+freq_race
 ```
 
 ####### 6. Economic Perception
 ```{r}
 #| label: freq-econ-percep-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 econ_percep_freq <- as.data.frame(table(amertrends_clean$econ_percep))
@@ -847,11 +879,15 @@ econ_percep_freq$Percent <- (econ_percep_freq$Frequency / sum(econ_percep_freq$F
 freq_econ_percep <- flextable(econ_percep_freq) |>
   set_caption("Table 6. Frequency Table for Economic Perception Categories") |>
   autofit()
+
+freq_econ_percep
 ```
 
 ####### 7. Political Leaning 
 ```{r}
 #| label: freq-pol-lean-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 pol_lean_freq <- as.data.frame(table(amertrends_clean$pol_lean))
@@ -866,11 +902,15 @@ pol_lean_freq$Percent <- (pol_lean_freq$Frequency / sum(pol_lean_freq$Frequency)
 freq_pol_lean <- flextable(pol_lean_freq) |>
   set_caption("Table 7. Frequency Table for Political Leaning Categories") |>
   autofit()
+
+freq_pol_lean
 ```
 
 ####### 8. Autocratic Support
 ```{r}
 #| label: freq-autoc-support-creation
+#| echo: true
+#| results: 'markup'
 
 #use table function to generate a frequency table
 autoc_support_freq <- as.data.frame(table(amertrends_clean$autoc_support_cat))
@@ -885,4 +925,6 @@ autoc_support_freq$Percent <- (autoc_support_freq$Frequency / sum(autoc_support_
 freq_autoc_support <- flextable(autoc_support_freq) |>
   set_caption("Table 8. Frequency Table for Autocratic Leadership Support Categories") |>
   autofit()
+
+freq_autoc_support
 ```
