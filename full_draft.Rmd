@@ -240,14 +240,13 @@ freq_autoc_support <- flextable(autoc_support_freq) |>
   autofit()
 ```
 
-
 ```{r}
 #| label: freq-age
 #| echo: false
 freq_age
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-gender
@@ -255,7 +254,7 @@ freq_age
 freq_gender
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-income
@@ -263,7 +262,7 @@ freq_gender
 freq_income
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-race
@@ -271,7 +270,7 @@ freq_income
 freq_race
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-econ-percep
@@ -279,7 +278,7 @@ freq_race
 freq_econ_percep
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-pol-lean
@@ -287,7 +286,7 @@ freq_econ_percep
 freq_pol_lean
 ```
 
-#### 
+# 
 
 ```{r}
 #| label: freq-autoc-support
@@ -295,9 +294,9 @@ freq_pol_lean
 freq_autoc_support
 ```
 
-#### 
+# 
 
-#### Loading and cleaning the data
+#### Loading and Cleaning the Data
 
 In the code chunk below, we read in the data and create a subset containing only the relevant variables. We then clean the names, define NAs, and correct the column types.
 
@@ -326,7 +325,7 @@ amertrends_subset <- amertrends_subset |>
   mutate(across(where(is.numeric), as.factor))
 ```
 
-#### Cleaning response variable
+#### Cleaning Response Variable
 
 In the code chunk below, we create two versions of the binary response variable (autoc_support): one with values 0 and 1 for the model, and one with descriptive labels for visualizations.
 
@@ -349,9 +348,7 @@ amertrends_subset <- amertrends_subset |>
   drop_na(autoc_support_cat)
 ```
 
-#### 
-
-#### Cleaning explanatory variables
+#### Cleaning Explanatory Variables
 
 In the code chunk below, we recode the explanatory variables and create a new CSV file containing the clean data. 
 
@@ -490,8 +487,6 @@ write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 
 ```
 
-#### 
-
 #### Figures
 
 In the code chunk below, we create Figures 1 and 2.
@@ -557,7 +552,7 @@ amertrends_clean |>
 ggsave("Figure_2.png", width = 4, height = 2.75)
 ```
 
-#### Building version 1 of the model
+#### Building Version 1 of the Model
 
 In the code chunk below, we create the first model with all demographic and theory-driven variables under consideration. We then check the ROC curve.
 
@@ -584,9 +579,7 @@ auc(roc_v1)
 #not a great model, so we will try adjusting which demographic variables are included to see if that improves things
 ```
 
-#### 
-
-#### Building version 2 of the model
+#### Building Version 2 of the Model
 
 In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age. We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. There appears to be collinearity between the interaction term sm_pref_index*pol_lean and pol_lean.
 
@@ -632,9 +625,7 @@ df <- autoc_lm_v2$df.null - autoc_lm_v2$df.residual
 1 - pchisq(G, df)
 ```
 
-#### 
-
-#### Creating model version 2 summary table
+#### Creating Model Version 2 Summary Table
 
 In the code chunk below, we create the summary table for the final mode. 
 
@@ -687,9 +678,7 @@ model_summary_table <- flextable(summary_v2) |>
 model_summary_table
 ```
 
-#### 
-
-#### Creating frequency tables
+#### Creating Frequency Tables
 
 ####### 2. Age
 ```{r}
@@ -823,10 +812,3 @@ freq_autoc_support <- flextable(autoc_support_freq) |>
   set_caption("Table 8. Frequency Table for Autocratic Leadership Support Categories") |>
   autofit()
 ```
-
-
-
-
-
-
-
