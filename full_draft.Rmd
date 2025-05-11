@@ -22,6 +22,7 @@ library(forcats)
 library(sjmisc)
 library(ggridges)
 library(flextable)
+library(boot)
 
 amertrends_clean <- read_csv("data/data-clean/amertrends_clean.csv")
 ```
@@ -596,7 +597,7 @@ amertrends_clean |>
        fill = "Autocratic Leadership",
        title = "Figure 2. Support for Autocratic Leadership by Economic Perception \nand Political Leaning")
 
-ggsave("Figure_2.png", width = 4, height = 2.75)
+#ggsave("Figure_2.png", width = 4, height = 2.75)
 ```
 
 #### Building Version 1 of the Model
@@ -628,7 +629,9 @@ auc(roc_v1)
 
 #### Building Version 2 of the Model
 
-In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age. We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. There appears to be collinearity between the interaction term sm_pref_index*pol_lean and pol_lean.
+In the code chunk below, we use stepwise selection to find the "best" model. Because the variable selection is partly theory-driven, we make the smaller model include the theory-driven variables to ensure they are included in the final model, rather than setting the lower model to a null model. The process results in a model that includes every predictor except age. We then check the ROC curve and find that it is not much better or worse than the previous model. Given the stepwise results and the fact that all age categories were insignificant per the Wald-z tests, we decide to proceed with the model without age. 
+
+When checking assumptions, there appears to be collinearity between the interaction term sm_pref_index*pol_lean and pol_lean, but that seems unavoidable. The large sample size assumption is met (n = 2065), as is the independence of outcomes and variables assumption. 
 
 ```{r}
 #| label: model-v2
@@ -671,6 +674,36 @@ G
 df <- autoc_lm_v2$df.null - autoc_lm_v2$df.residual
 1 - pchisq(G, df)
 ```
+
+#### Cross-Validation
+
+The cross-validation prediction error or average test MSE when using 10-fold cross validation is 0.2010 for model v2 (our final model). Model v1 (which contained age before stepwise selection recommended removing it) had an average test MSE of 0.2105. Therefore, we will continue with model v2 as our final model, considering it has performed better during cross-validation, AUC comparisons, and AIC comparisons. 
+
+```{r}
+#| label: cross-validation
+#| eval: false 
+# 10-fold cross validation
+
+#set seed for reproducibility
+set.seed(410)
+
+#final model v2: calculate cross-validation prediction error using only complete cases (4 NAs within 2 rows dropped)
+cv.err1.2 <- cv.glm(data = amertrends_clean[complete.cases(amertrends_clean), ], 
+                  glmfit = autoc_lm_v2, 
+                  K = 10)
+
+#output average test MSE, AKA cross-validation prediction error
+cv.err1.2$delta[1]
+
+#compare to model v1
+cv.err1.1 <- cv.glm(data = amertrends_clean[complete.cases(amertrends_clean), ], 
+                  glmfit = autoc_lm_v1, 
+                  K = 10)
+cv.err1.1$delta[1]
+
+```
+
+
 
 #### Creating Model Version 2 Summary Table
 
