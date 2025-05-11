@@ -8,7 +8,8 @@ output:
 
 ##### Sam Minard^1^ & Efrain Ramirez^2^
 
-^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA* ^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
+^*1*^*Department of Social Sciences & Global Studies, California State University, Monterey Bay, Seaside, CA* 
+^*2*^*Department of Psychology, California State University, Monterey Bay, Seaside, CA*
 
 ```{r}
 #| label: setup
