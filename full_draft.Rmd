@@ -38,7 +38,7 @@ Populist movements and the autocratic leaders they support are often fueled by a
 
 As the information channels American society relies on continue to evolve, it is important to consider the relationship between media type preferences and anti-democratic sentiments that encourage support for autocratic leadership. Notably, mainstream media trust among conservatives has declined, leading them to seek alternatives like social media, where they may encounter misinformation and populist rhetoric (Hutchens et al., 2025; Mourão, 2017). While social media has been touted as a democratic panacea because of its potential for disseminating anti-regime information and mobilizing collective action, many autocratic regimes engage in social media censorship (Gunitsky, 2015). However, Gunitsky (2015) argues that many regimes have since moved from suppression to co-optation of social media as a tool to maintain autocratic stability– a far more insidious tactic. Co-opting social media allows autocratic regimes to shape the discourse on social media, promote counter-mobilization, and bolster regime legitimacy. Given autocratic co-optation alongside the transition to social media as the public’s primary source of news and information, it is crucial to investigate the relationship between social media use and support for autocratic governance among American adults. Furthermore, the disparity in media preferences between conservatives and liberals means that political ideology must be considered as a mediating factor in this relationship. As a result, we propose the following research question: *Is a preference for getting news and information primarily from social media associated with support for autocratic leadership? How does this relationship vary depending on political ideology?*
 
-By investigating these research questions, this paper will contribute to our understanding of the factors associated with support for autocratic leadership among Americans. First, we hypothesize that perceiving the economy as "bad" has predictive power of support for autocratic leadership, increasing the odds Second, we hypothesize that there is a stronger relationship between the preference for getting news and information primarily from social media and support for autocratic leadership among conservatives compared to liberals.
+By investigating these research questions, this paper contributes to our understanding of the factors associated with support for autocratic leadership among Americans. First, we hypothesize that perceiving the economy as "bad" has predictive power of support for autocratic leadership, increasing the odds of support. Second, we hypothesize that there is a stronger relationship between the preference for getting news and information primarily from social media and support for autocratic leadership among conservatives compared to liberals.
 
 # Methods
 
@@ -50,68 +50,256 @@ This study conducts secondary analysis of the American Trends Panel Wave 124 dat
 
 The primary dependent variable in this study is support for autocratic leadership, which was measured through the following question: “Would each of the following political systems be a good or bad way of governing this country? A system in which a strong leader can make decisions without interference from Congress or the courts.” Response options included a range from “Very good” to “Very bad,” and “Refused.” This was re-coded into “Supports” and “Does not support" to ensure a binary response variable.
 
-Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (2: “Prefers social media”; 1: “Prefers both”; and 0: “Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped. The final sample size included in the model was 2065 observations.
+Independent variables we considered included demographics such as age, race, gender, and family income. In addition, we used economic perception (“How would you describe the current economic situation in the U.S.?”) to measure perceived economic insecurity at the macro level. Categories were collapsed into “Good” and “Bad.” Finally, multiple variables measured respondents’ news source and social media preferences, including how often respondents get news, facts, and opinions about issues or events from social media sites, and whether respondents prefer getting various kinds of information from news outlets, social media, both, or neither. The five variables concerning whether respondents preferred news outlets or social media were re-coded to contain three levels (“2: Prefers social media”; “1: Prefers both”; and “0: Prefers news outlets or neither”). Then, the values for each were summed within each row to assign an index score for social media preference to each respondent. With a range of 0-10, higher scores indicated a stronger preference for obtaining information from social media. For all variables, “Refused” responses were treated as “NA” and dropped. 
 
 ## Analytic Methods
 
-Frequency tables were used to summarize the counts and proportions for control variables including income, race, gender, and political party categories. They were also used to summarize the response and some explanatory variables. The social media preference index score distribution for each autocratic support category was illustrated with ridgelines and boxplots. Multiple logistic regression was used to predict support for autocratic leadership. We included the aforementioned theory-driven variables as well as income, race ("White" or "Non-White"), gender, and political leaning in the final model. Control variables were refined through stepwise selection, which removed only age.
+Frequency tables were used to summarize the counts and proportions for control variables including income, race, gender, and political party categories. They were also used to summarize the response and some explanatory variables. The social media preference index score distribution for each autocratic support category was illustrated with ridgelines and boxplots. Multiple logistic regression was used to predict support for autocratic leadership. We included the aforementioned theory-driven variables as well as income, race ("White" or "Non-White"), gender, and political leaning in the final model. The final control variables were refined through stepwise selection, which removed only age based on model AIC. 
 
 # Results
 
 ## Exploratory Data Analysis
 
-Figure 1 shows that social media preference index score distributions are similar between those who do and do not support autocratic leadership. However, the supportive group's mean score (3.672) was marginally higher than the non-supportive group's (3.510).
+Our final sample consisted of 2065 respondents ranging from 18 years old to over 65, of which 1225 were men (59.35%),  816 were women (39.53%), and 23 identified some other way (1.11%) (see Tables 2 and 3). They were grouped into three income levels: lower, middle, and upper income (see Table 4). The sample was 54.72% white (n = 1130) and 45.28% non-white (n = 935) (see Table 5). We observed that 70.57% perceived the economy as “bad” (n = 1458), while the remaining 29.43% (n = 607) perceived the opposite (see Table 6). Politically, 1152 respondents identified as democrats or leaning democrat (55.79%), while 844 respondents reported to be republicans or leaning republican (40.87%) (see Table 7). Support for autocratic leadership was expressed by 604 respondents (29.25%), while 1461 (70.75%) did not support it (see Table 8). The average social media preference index score for the sample was 3.557, with standard deviation 2.725. The distribution of the scores for each group is presented in the figure below. Figure 1 shows that social media preference index score distributions are similar between those who do and do not support autocratic leadership. However, the supportive group's mean score (3.672) was marginally higher than the non-supportive group's (3.510).
 
 ###### ![](Figure_1.png) 
 
-Figure 2 displays the proportions of respondents who support autocratic leadership within each economic perception category, faceted by political leaning. Across all political groups, a higher proportion of those who perceive the economy as "good" express support for autocracy. Frequency tables for income, political party, race, gender, and economic perception are included in the appendix.
+Figure 2 displays the proportions of respondents who support autocratic leadership within each economic perception category, faceted by political leaning. Across all political groups, a higher proportion of those who perceive the economy as "good" express support for autocracy. 
 
 ###### ![](Figure_2.png)
 
 ## Statistical Analysis
 
-Table 1 below summarizes the multiple logistic regression model output for autocratic leadership support. The estimates and p-values will be interpreted in the following section. Log odds model: $ln(p(x)/1-p(x))=-0.57324+0.04294x_{1}+0.02412x_{2}+0.44557x_{3}-0.02921x_{4}+0.22214x_{5}-0.58883x_{6}-0.06985x_{7}+0.42960x_{8}-0.69719x_{9}+-1.26958x_{10}+0.04836x_{7}x_{1}-0.08469x_{11}x_{1}$ ![Table1](Table_1.png)
+Table 1 below summarizes the multiple logistic regression model output for autocratic leadership support. The estimates and p-values will be interpreted in the following section. 
+The final log odds model is as follows: $ln(p(x)/1-p(x))=-0.57324+0.04294x_{1}+0.02412x_{2}+0.44557x_{3}-0.02921x_{4}+0.22214x_{5}-0.58883x_{6}-0.06985x_{7}+0.42960x_{8}-0.69719x_{9}+-1.26958x_{10}+0.04836x_{7}x_{1}-0.08469x_{11}x_{1}$ 
+![Table1](Table_1.png)
 
 # Conclusion
 
-The purpose of this study is to determine whether individuals' social media reliance and perception of the economy as generally good or bad might predict support for autocratic leadership in the United States. In addition, an interaction between social media reliance and political ideology is also considered. There is very strong evidence that at least one variable in the model with social media preference index score, social media use frequency, economic perception, gender, race, political leaning, income, and the social media preference-political leaning interaction has predictive power of autocratic support (G = 141.3424, p-value \< 0.001). However, the model overall is a poor fit, as evidenced by the relatively low Area Under Curve (AUC) value (AUC = 0.6589).
+The purpose of this study is to determine whether individuals' social media reliance and perception of the economy as generally good or bad might predict support for autocratic leadership in the United States. In addition, an interaction between social media reliance and political ideology was considered. There is very strong evidence that at least one variable in the model with social media preference index score, social media use frequency, economic perception, gender, race, political leaning, income, and the social media preference-political leaning interaction has predictive power of autocratic support (G = 141.3424, p-value < 0.001). However, the model overall is a poor fit, as evidenced by the relatively low Area Under Curve (AUC) value (AUC = 0.6589).
 
-While the model overall is not very effective at predicting autocratic support, several predictors were statistically significant, including the intercept (z = -1.978, p-value = 0.0479), perceiving the economy as good (z = 4.009, p-value \< 0.0001), being a woman (z = 2.100, p-value = 0.0357), being white (z = -5.475, p-value \< 0.00001), being or leaning Republican (z = 2.371, p-value = 0.0177), being middle income (z = -6.309, p-value \< 0.00001), and being upper income (z = -8.011, p-value \< 0.00001). Social media preference index score, social media use frequency, being non-binary, being neither Republican nor Democrat, and the interaction between social media preference index score and political leaning were not statistically significant.
+While the model overall is not very effective at predicting autocratic support, several predictors were statistically significant, including the intercept (z = -1.978, p-value = 0.0479), perceiving the economy as good (z = 4.009, p-value < 0.0001), being a woman (z = 2.100, p-value = 0.0357), being white (z = -5.475, p-value < 0.00001), being or leaning Republican (z = 2.371, p-value = 0.0177), being middle income (z = -6.309, p-value < 0.00001), and being upper income (z = -8.011, p-value < 0.00001). Social media preference index score, social media use frequency, being non-binary, being neither Republican nor Democrat, and the interaction between social media preference index score and political leaning were not statistically significant.
 
-Based on the model, we can predict the following: When a male, non-white, lower income democrat's social media preference index score is 0, they never use social media to get news information, and they perceive the economy as bad, their odds of supporting autocratic leadership are multiplied by 0.5636961. When all other variables are held constant, the odds of autocratic support are 1.56138 times higher when perceiving the economy as good compared to bad, which contradicts our expectations. White individuals odds of autocratic support are 0.5549762 times that of non-white individuals, indicating that whites are less likely to express autocratic support, again contradicting our expectations. Finally, middle and upper income individuals' odds of autocratic support are respectively 0.4979827 and 0.2809496 times those for lower income individuals, indicating that being lower income increases the probability of autocratic support, when all other variables are held constant.
+Based on the model, we can predict the following. When all other variables are held constant, the odds of autocratic support are 1.56138 times higher when perceiving the economy as good compared to bad, which contradicts our expectations. White individuals odds of autocratic support are 0.5549762 times that of non-white individuals, indicating that whites are less likely to express autocratic support, again contradicting our expectations. Finally, middle and upper income individuals' odds of autocratic support are respectively 0.4979827 and 0.2809496 times those for lower income individuals, indicating that being lower income increases the probability of autocratic support, when all other variables are held constant.
 
 We hypothesized that perceiving the economy as "bad" has predictive power of support for autocratic leadership, increasing the odds of support. While economic perception was statistically significant, the odds of autocratic support were actually lower when perceiving the economy as bad compared to good, so our hypothesis was not supported. Second, we hypothesized that there is a significant interaction between political party and social media preference index score on the log-odds of the autocratic support; specifically, the increase in social media preference score was hypothesized to be associated with a greater increase in the odds of the outcome for Republicans than for other political parties. This hypothesis was not supported by sufficient evidence (z = -1.691, p-value = 0.0909).
 
-The results largely disagree with past research and our hypotheses, except in several demographic areas. First, based on the results, macro-level economic insecurity is associated with lower odds of autocratic support. A preference for getting news and information primarily from social media is not associated with higher odds of autocratic support, and political ideology is not a significant mediating factor in the relationship. The frequency of social media use for news consumption is also not associated with increased odds of autocratic support. Interestingly, men and whites are less likely to express autocratic support, contradicting the scholarly consensus that autocratic support tends to be highest among these group. However, in agreement with previous research, autocratic support is more likely among Republicans and lower income individuals than other political and income groups. The inconsistency between our results and existing research may stem from several limitations of this study, and indicates a need for further research on this topic. First, certain explanatory variables related to social media behavior contained a high percentage of missing values which could have influenced the analysis. Second, the data was collected via a stratified sample with oversampling in underrepresented groups, then weighted. However, our analysis did not take weights into account, meaning some racial groups had a disproportionate influence over the analysis. These limitations prevent us from making confident inferences about the factors influencing autocratic support among Americans. However, the results provoke new questions and challenge existing assumptions about the nature of this critical and evolving issue.
+The results largely disagree with past research and our hypotheses, except in several demographic areas. These contradictions include our findings that macro-level economic insecurity is associated with lower odds of autocratic support. and that a preference for getting news and information primarily from social media is not associated with higher odds of autocratic support, nor is political ideology a significant mediating factor in the relationship. The frequency of social media use for news consumption is also not associated with increased odds of autocratic support. Interestingly, men and whites are less likely to express autocratic support, contradicting the scholarly consensus that autocratic support tends to be highest among these group. However, in agreement with previous research, autocratic support is more likely among Republicans and lower income individuals than other political and income groups. The inconsistency between our results and existing research may stem from several limitations of this study, and indicates a need for further research on this topic. First, certain explanatory variables related to social media behavior contained a high percentage of missing values which could have influenced the analysis. Second, the data was collected via a stratified sample with oversampling in underrepresented groups, then weighted. However, our analysis did not take weights into account, meaning some racial groups had a disproportionate influence over the analysis. These limitations prevent us from making confident inferences about the factors influencing autocratic support among Americans. However, the results provoke new questions and challenge existing assumptions about the nature of this critical and evolving issue.
+
+\newpage
 
 # References
 
-Al Waroi, M. N. A. L., Riyanta, S., & Rustam, M. R. (2024). Populism and the erosion of democratic checks and balances: A systematic literature review across regions. International Journal of Multidisciplinary Research and Analysis, 7(10), 4728-4738. <https://doi.org/10.47191/ijmra/v7-i10-18>
+Al Waroi, M. N. A. L., Riyanta, S., & Rustam, M. R. (2024). Populism and the erosion of democratic checks and balances: A systematic literature review across regions. *International Journal of Multidisciplinary Research and Analysis, 7*(10), 4728-4738. <https://doi.org/10.47191/ijmra/v7-i10-18>
 
-Baturo, A., Kenny, P. D., & Balta, E. (2024). Leaders’ experience and the transition from populism to dictatorship. Democratization, 1–24. <https://doi.org/10.1080/13510347.2024.2391482>
+Baturo, A., Kenny, P. D., & Balta, E. (2024). Leaders’ experience and the transition from populism to dictatorship. *Democratization, 1*–24. <https://doi.org/10.1080/13510347.2024.2391482>
 
-Berlin, I., Hofstadter, R., MacRae, D., Schapiro, L., Seton-Watson, H., Touraine, A., Venturi, F., Walicki, A., & Worsley, P. (1968). To define populism. Government and Opposition, 3(2), 137–179. <http://www.jstor.org/stable/44481863>
+Berlin, I., Hofstadter, R., MacRae, D., Schapiro, L., Seton-Watson, H., Touraine, A., Venturi, F., Walicki, A., & Worsley, P. (1968). To define populism. *Government and Opposition, 3*(2), 137–179. <http://www.jstor.org/stable/44481863>
 
-Boese, V. A., Lundstedt, M., Morrison, K., Sato, Y., & Lindberg, S. I. (2022). State of the world 2021: Autocratization changing its nature? Democratization, 29(6), 983–1013. <https://doi.org/10.1080/13510347.2022.2069751>
+Boese, V. A., Lundstedt, M., Morrison, K., Sato, Y., & Lindberg, S. I. (2022). State of the world 2021: Autocratization changing its nature? *Democratization, 29*(6), 983–1013. <https://doi.org/10.1080/13510347.2022.2069751>
 
-Cambridge University Press & Assessment. (n.d.). Autocracy. In Cambridge dictionary. Retrieved March 16, 2025, from <https://dictionary.cambridge.org/us/dictionary/english/autocracy>
+Cambridge University Press & Assessment. (n.d.). Autocracy. In *Cambridge dictionary*. Retrieved March 16, 2025, from <https://dictionary.cambridge.org/us/dictionary/english/autocracy>
 
-Cerda, A. (2025, February 11). Republicans think economy will improve over the next year, Democrats expect it to get worse. Pew Research Center. <https://www.pewresearch.org/short-reads/2025/02/11/republicans-think-economy-will-improve-over-the-next-year-democrats-expect-it-to-get-worse/>
+Cerda, A. (2025, February 11). *Republicans think economy will improve over the next year, Democrats expect it to get worse.* Pew Research Center. <https://www.pewresearch.org/short-reads/2025/02/11/republicans-think-economy-will-improve-over-the-next-year-democrats-expect-it-to-get-worse/>
 
-Gidron, N., & Hall, P. A. (2017). The politics of social status: Economic and cultural roots of the populist right. The British Journal of Sociology, 68(S1). <https://doi.org/10.1111/1468-4446.12319>
+Gidron, N., & Hall, P. A. (2017). The politics of social status: Economic and cultural roots of the populist right. *The British Journal of Sociology, 68*(S1). <https://doi.org/10.1111/1468-4446.12319>
 
-Hutchens, M. J., Shaughnessy, B., & DuBosar, E. (2025). Populist hyperpartisans?: The interaction between partisan media exposure and populism in the 2020 US presidential election. Mass Communication and Society, 28(1), 51–75. <https://doi.org/10.1080/15205436.2023.2264265>
+Hutchens, M. J., Shaughnessy, B., & DuBosar, E. (2025). Populist hyperpartisans?: The interaction between partisan media exposure and populism in the 2020 US presidential election. *Mass Communication and Society, 28*(1), 51–75. <https://doi.org/10.1080/15205436.2023.2264265>
 
-Mourão, R. R., Thorson, E., Chen, W., & Tham, S. M. (2018). Media repertoires and news trust during the early Trump administration. Journalism Studies, 19(13), 1945–1956. <https://doi.org/10.1080/1461670X.2018.1500492>
+Mourão, R. R., Thorson, E., Chen, W., & Tham, S. M. (2018). Media repertoires and news trust during the early Trump administration. *Journalism Studies, 19*(13), 1945–1956. <https://doi.org/10.1080/1461670X.2018.1500492>
 
-Pew Research Center. (2023). American Trends Panel Wave 124 [Data file and codebook]. Retrieved from <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/.> 
+Pew Research Center. (2023). *American Trends Panel Wave 124* [Data file and codebook]. Retrieved from <https://www.pewresearch.org/dataset/american-trends-panel-wave-124/.> 
 
-Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. Social Indicators Research, 159(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
+Watson, B., Law, S., & Osberg, L. (2022). Are populists insecure about themselves or about their country? Political attitudes and economic perceptions. *Social Indicators Research, 159*(2), 667–705. <https://doi.org/10.1007/s11205-021-02767-8>
 
+\newpage
 
 # Appendix
 
+#### Frequency tables
+
+*Note: For the codes used to create these tables, see the "Creating Frequency Tables" section near the end of this document.*
+
+```{r}
+#| label: freq-table-creation
+#| echo: false
+
+#must include creation code here, before trying to print the table objects, otherwise it won't knit properly
+#setting echo to false so this won't be visible/get in the way of easily viewing the tables
+#will include this code again at the bottom of the appendix for documentation purposes so it can be viewed in the knitted word document
+
+
+#Table 2. Age
+#use table function to generate a frequency table
+age_freq <- as.data.frame(table(amertrends_clean$age))
+
+#rename columns to match the format
+colnames(age_freq) <- c("Age", "Frequency")
+
+#add the percentage column
+age_freq$Percent <- (age_freq$Frequency / sum(age_freq$Frequency)) * 100
+
+#create the flextable
+freq_age <- flextable(age_freq) |>
+  set_caption("Table 2. Frequency Table for Age Categories") |>
+  autofit()
+
+
+#Table 3. Gender
+#use table function to generate a frequency table
+gender_freq <- as.data.frame(table(amertrends_clean$gender))
+
+#rename columns to match the format
+colnames(gender_freq) <- c("Gender", "Frequency") 
+
+#add the percentage column
+gender_freq$Percent <- (gender_freq$Frequency / sum(gender_freq$Frequency)) * 100
+
+#create the flextable
+freq_gender <- flextable(gender_freq) |>
+  set_caption("Table 3. Frequency Table for Gender Categories") |>
+  autofit()
+
+
+#Table 4. Income
+#use table function to generate a frequency table
+income_freq <- as.data.frame(table(amertrends_clean$income))
+
+#rename columns to match the format
+colnames(income_freq) <- c("Income Category", "Frequency")
+
+#add the percentage column
+income_freq$Percent <- (income_freq$Frequency / sum(income_freq$Frequency)) * 100
+
+#create the flextable
+freq_income <- flextable(income_freq) |>
+  set_caption("Table 4. Frequency Table for Income Categories") |>
+  autofit()
+
+#Table 5. Race
+#use table function to generate a frequency table
+race_freq <- as.data.frame(table(amertrends_clean$race_1))
+
+#rename columns to match the format
+colnames(race_freq) <- c("Race", "Frequency") 
+
+#add the percentage column
+race_freq$Percent <- (race_freq$Frequency / sum(race_freq$Frequency)) * 100
+
+#create the flextable
+freq_race <- flextable(race_freq) |>
+  set_caption("Table 5. Frequency Table for Race Categories") |>
+  autofit()
+
+
+#Table 6. Economic Perception
+#use table function to generate a frequency table
+econ_percep_freq <- as.data.frame(table(amertrends_clean$econ_percep))
+
+#rename columns to match the format
+colnames(econ_percep_freq) <- c("Economic Perception", "Frequency") 
+
+#add the percentage column
+econ_percep_freq$Percent <- (econ_percep_freq$Frequency / sum(econ_percep_freq$Frequency)) * 100
+
+#create the flextable
+freq_econ_percep <- flextable(econ_percep_freq) |>
+  set_caption("Table 6. Frequency Table for Economic Perception Categories") |>
+  autofit()
+
+
+#Table 7. Political Leaning
+#use table function to generate a frequency table
+pol_lean_freq <- as.data.frame(table(amertrends_clean$pol_lean))
+
+#rename columns to match the format
+colnames(pol_lean_freq) <- c("Political Leaning", "Frequency") 
+
+#add the percentage column
+pol_lean_freq$Percent <- (pol_lean_freq$Frequency / sum(pol_lean_freq$Frequency)) * 100
+
+#create the flextable
+freq_pol_lean <- flextable(pol_lean_freq) |>
+  set_caption("Table 7. Frequency Table for Political Leaning Categories") |>
+  autofit()
+
+
+#Table 8. Autoc Support
+#use table function to generate a frequency table
+autoc_support_freq <- as.data.frame(table(amertrends_clean$autoc_support_cat))
+
+#rename columns to match the format
+colnames(autoc_support_freq) <- c("Autocratic Leadership Support", "Frequency") 
+
+#add the percentage column
+autoc_support_freq$Percent <- (autoc_support_freq$Frequency / sum(autoc_support_freq$Frequency)) * 100
+
+#create the flextable
+freq_autoc_support <- flextable(autoc_support_freq) |>
+  set_caption("Table 8. Frequency Table for Autocratic Leadership Support Categories") |>
+  autofit()
+```
+
+
+```{r}
+#| label: freq-age
+#| echo: false
+freq_age
+```
+
+#### 
+
+```{r}
+#| label: freq-gender
+#| echo: false
+freq_gender
+```
+
+#### 
+
+```{r}
+#| label: freq-income
+#| echo: false
+freq_income
+```
+
+#### 
+
+```{r}
+#| label: freq-race
+#| echo: false
+freq_race
+```
+
+#### 
+
+```{r}
+#| label: freq-econ-percep
+#| echo: false
+freq_econ_percep
+```
+
+#### 
+
+```{r}
+#| label: freq-pol-lean
+#| echo: false
+freq_pol_lean
+```
+
+#### 
+
+```{r}
+#| label: freq-autoc-support
+#| echo: false
+freq_autoc_support
+```
+
+#### 
+
 #### Loading and cleaning the data
+
+In the code chunk below, we read in the data and create a subset containing only the relevant variables. We then clean the names, define NAs, and correct the column types.
 
 ```{r}
 #| label: load-and-clean-data
@@ -161,9 +349,11 @@ amertrends_subset <- amertrends_subset |>
   drop_na(autoc_support_cat)
 ```
 
+#### 
+
 #### Cleaning explanatory variables
 
-In the code chunk below, we recode the explanatory variables and create a new, clean data csv.
+In the code chunk below, we recode the explanatory variables and create a new CSV file containing the clean data. 
 
 ```{r}
 #| label: clean-explanatory
@@ -300,6 +490,8 @@ write_csv(amertrends_subset, "data/data-clean/amertrends_clean.csv")
 
 ```
 
+#### 
+
 #### Figures
 
 In the code chunk below, we create Figures 1 and 2.
@@ -392,6 +584,7 @@ auc(roc_v1)
 #not a great model, so we will try adjusting which demographic variables are included to see if that improves things
 ```
 
+#### 
 
 #### Building version 2 of the model
 
@@ -439,33 +632,34 @@ df <- autoc_lm_v2$df.null - autoc_lm_v2$df.residual
 1 - pchisq(G, df)
 ```
 
+#### 
+
 #### Creating model version 2 summary table
 
-In the code chunk below, we create the summary table for the final mode. It doesn't appear in the rendered word document unfortunately, so we include a screenshot in the text instead.
+In the code chunk below, we create the summary table for the final mode. 
 
 ```{r}
 #| label: model-summary-table
-#| echo: false
-#| eval: false
 
+#define the coefficients in a vector
 coef <- c(
   "-0.57324", "0.04294", "0.02412", "0.44557", "-0.02921", "0.22214", "-0.58883", "-0.06985", "0.42960", "-0.69719", "-1.26958", "0.04836", "-0.08469") 
-
+#define the std. errors
 std.error <- c(
   "0.28981", "0.02629", "0.07023", "0.11115", "0.49880", "0.10576", "0.10755", "0.45001", "0.18116", "0.11051", "0.15848", "0.10190", "0.03826")
-
+#define z scores
 z.value <- c(
   "-1.978", "1.633", "0.343", "4.009", "-0.059", "2.100", "-5.475", "-0.155", "2.371", "-6.309", "-8.011", "0.475", "-1.691")
-
+#define p-values
 p.value <- c(
   "0.0479*", "0.1024", "0.7312", "<0.0001***", "0.9533", "0.0357*", "<0.00001***", "0.8766", "0.0177*", "<0.00001***", "<0.00001***", "0.6351", "0.0909")
-
+#put them into a data frame
 summary_v2 <- data.frame(
   Estimate = coef,
   `Std. Error` = std.error,
   `z-value` = z.value,
   `p-value` = p.value)
-
+#give the rows descriptive names 
 rownames(summary_v2) <- c(
   "Intercept", "Social Media Pref. Index", "Social Media Use Frequency",
   "Economic Perception (Good)", "Other Gender", "Woman", "White",
@@ -473,14 +667,14 @@ rownames(summary_v2) <- c(
   "Upper Income", "Social Media Pref. Index * Other Party",
   "Social Media Pref. Index * Republican, or Leans Republican")
 
-# Add row names as a column
+#add row names as a column
 summary_v2$Variable <- rownames(summary_v2)
 
-# Reorder to put 'Variable' first
+#reorder to put 'variable' first
 summary_v2 <- summary_v2[, c("Variable", setdiff(colnames(summary_v2), "Variable"))]
 
-# Make the flextable
-flextable(summary_v2) |> 
+#make the flextable
+model_summary_table <- flextable(summary_v2) |> 
   set_caption("Table 1. Output for Multiple Logistic Regression Model") |> 
   set_header_labels(
     Variable = "Variable",
@@ -489,41 +683,150 @@ flextable(summary_v2) |>
     `z-value` = "z-value",
     `p-value` = "p-value") |> 
   autofit()
+
+model_summary_table
 ```
 
-#### Frequency tables
+#### 
 
-Table 2. Frequency table for gender categories.
+#### Creating frequency tables
 
+####### 2. Age
 ```{r}
-#| echo: FALSE
-frq(amertrends_clean$gender, out = "txt")
+#| label: freq-age-creation
+
+#use table function to generate a frequency table
+age_freq <- as.data.frame(table(amertrends_clean$age))
+
+#rename columns to match the format
+colnames(age_freq) <- c("Age", "Frequency")
+
+#add the percentage column
+age_freq$Percent <- (age_freq$Frequency / sum(age_freq$Frequency)) * 100
+
+#create the flextable
+freq_age <- flextable(age_freq) |>
+  set_caption("Table 2. Frequency Table for Age Categories") |>
+  autofit()
 ```
 
-Table 3. Frequency table for income categories.
-
+####### 3. Gender
 ```{r}
-#| echo: FALSE
-frq(amertrends_clean$income, out = "txt")
+#| label: freq-gender-creation
+
+#use table function to generate a frequency table
+gender_freq <- as.data.frame(table(amertrends_clean$gender))
+
+#rename columns to match the format
+colnames(gender_freq) <- c("Gender", "Frequency") 
+
+#add the percentage column
+gender_freq$Percent <- (gender_freq$Frequency / sum(gender_freq$Frequency)) * 100
+
+#create the flextable
+freq_gender <- flextable(gender_freq) |>
+  set_caption("Table 3. Frequency Table for Gender Categories") |>
+  autofit()
 ```
 
-Table 4. Frequency table for race categories.
-
+####### 4. Income
 ```{r}
-#| echo: FALSE
-frq(amertrends_clean$race_1, out = "txt")
+#| label: freq-income-creation
+
+#use table function to generate a frequency table
+income_freq <- as.data.frame(table(amertrends_clean$income))
+
+#rename columns to match the format
+colnames(income_freq) <- c("Income Category", "Frequency")
+
+#add the percentage column
+income_freq$Percent <- (income_freq$Frequency / sum(income_freq$Frequency)) * 100
+
+#create the flextable
+freq_income <- flextable(income_freq) |>
+  set_caption("Table 4. Frequency Table for Income Categories") |>
+  autofit()
 ```
 
-Table 5. Frequency table for economic perception categories.
-
+####### 5. Race
 ```{r}
-#| echo: FALSE
-frq(amertrends_clean$econ_percep, out = "txt")
+#| label: freq-race-creation
+
+#use table function to generate a frequency table
+race_freq <- as.data.frame(table(amertrends_clean$race_1))
+
+#rename columns to match the format
+colnames(race_freq) <- c("Race", "Frequency") 
+
+#add the percentage column
+race_freq$Percent <- (race_freq$Frequency / sum(race_freq$Frequency)) * 100
+
+#create the flextable
+freq_race <- flextable(race_freq) |>
+  set_caption("Table 5. Frequency Table for Race Categories") |>
+  autofit()
 ```
 
-Table 6. Frequency table for political leaning categories.
-
+####### 6. Economic Perception
 ```{r}
-#| echo: FALSE
-frq(amertrends_clean$pol_lean, out = "txt")
+#| label: freq-econ-percep-creation
+
+#use table function to generate a frequency table
+econ_percep_freq <- as.data.frame(table(amertrends_clean$econ_percep))
+
+#rename columns to match the format
+colnames(econ_percep_freq) <- c("Economic Perception", "Frequency") 
+
+#add the percentage column
+econ_percep_freq$Percent <- (econ_percep_freq$Frequency / sum(econ_percep_freq$Frequency)) * 100
+
+#create the flextable
+freq_econ_percep <- flextable(econ_percep_freq) |>
+  set_caption("Table 6. Frequency Table for Economic Perception Categories") |>
+  autofit()
 ```
+
+####### 7. Political Leaning 
+```{r}
+#| label: freq-pol-lean-creation
+
+#use table function to generate a frequency table
+pol_lean_freq <- as.data.frame(table(amertrends_clean$pol_lean))
+
+#rename columns to match the format
+colnames(pol_lean_freq) <- c("Political Leaning", "Frequency") 
+
+#add the percentage column
+pol_lean_freq$Percent <- (pol_lean_freq$Frequency / sum(pol_lean_freq$Frequency)) * 100
+
+#create the flextable
+freq_pol_lean <- flextable(pol_lean_freq) |>
+  set_caption("Table 7. Frequency Table for Political Leaning Categories") |>
+  autofit()
+```
+
+####### 8. Autocratic Support
+```{r}
+#| label: freq-autoc-support-creation
+
+#use table function to generate a frequency table
+autoc_support_freq <- as.data.frame(table(amertrends_clean$autoc_support_cat))
+
+#rename columns to match the format
+colnames(autoc_support_freq) <- c("Autocratic Leadership Support", "Frequency") 
+
+#add the percentage column
+autoc_support_freq$Percent <- (autoc_support_freq$Frequency / sum(autoc_support_freq$Frequency)) * 100
+
+#create the flextable
+freq_autoc_support <- flextable(autoc_support_freq) |>
+  set_caption("Table 8. Frequency Table for Autocratic Leadership Support Categories") |>
+  autofit()
+```
+
+
+
+
+
+
+
